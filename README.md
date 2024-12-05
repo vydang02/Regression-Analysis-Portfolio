@@ -1,1 +1,1 @@
-# STATS-413
+# STATS-413: Applied Regression
