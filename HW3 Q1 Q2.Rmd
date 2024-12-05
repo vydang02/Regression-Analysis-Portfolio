@@ -1,0 +1,169 @@
+---
+title: "HW 3 Q1 Q2"
+author: "Vy Dang"
+date: "2024-09-30"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+```
+
+## Problem 1 (through Lecture 9)
+
+In this problem, we consider the Ames, Iowa Housing Prices dataset, which describes sales of 2,838 properties in the town of Ames, Iowa from 2006 to 20101. You will work with the dataset provided in the AmesSales.csv file. This file has been pre-processed to simplify the analysis. We started with a partially processed set available on Github2 and selected a few of the most relevant variables to include in our analysis. The file contains 12 variables, described below. The first variable is the property’s sale price—which we aim
+to predict. The other variables describe the property details in quantitative terms (square footage, number of rooms, date of construction). There is one categorical variable, BldgType, which describes different types of homes (e.g. townhouse, duplex, etc.).
+• SalePrice - the property’s sale price (dollars)
+• TotalRooms: Total number of rooms
+• Bedrooms: # bedrooms
+• FullBath: Full bathrooms
+• HalfBath: Half baths
+• LivArea: Ground living area (sq. feet)
+• Fireplaces: Number of fireplaces
+• GarageArea: Size of garage (sq. feet)
+• PoolArea: Size of pool (sq. feet)
+• YearBuilt: Original construction date
+• YearSold: Year Sold
+• BldgType: Type of dwelling
+Run the following commands to read in the data and make sure SalePrice is encoded as a numeric variable and not a factor variable.
+```{r}
+ames = read.csv ("AmesSales.csv")
+ames$SalePrice = as.numeric(ames$SalePrice)
+```
+
+a. (2 pts) Use the hist() function on SalePrice to view the distribution of the dependent variable. Describe its shape.
+```{r}
+hist(ames$SalePrice, 
+     main = "Histogram of Sale Prices",
+     xlab = "Sale Price (dollars)",
+     ylab = "Frequency",
+     col = "blue",
+     breaks = 30) 
+```
+
+In problems (b)-(d), you may assume that the stronger linear model holds.
+b. (1 pt) Fit a linear regression that predicts SalePrice as a linear function of all of the other variables in the data set (i.e., all of the other columns of the data set)
+
+```{r}
+model <- lm(SalePrice ~ ., data = ames)
+summary(model)
+```
+c. (2 pts) Fit a new linear model that predicts SalePrice as a linear function of the other variables in the data set, and that additionally allows the slope coefficient on LivArea to vary as a function of BldgType.
+
+```{r}
+model_interaction <- lm(SalePrice ~ . + LivArea:BldgType, data = ames)
+summary(model_interaction)
+```
+
+d. (4 pts) Compare the R2 between the regression models you fit in (b) and (c). Based on this comparison alone, can you determine whether the model you fit in (c) provides a statistically significant improve- ment in predictive power relative to the model you fit in (b)? If so, explain why. If not, present an analysis which entitles you to a determination of whether the model you fit in (c) provides a substantial improvement in predictive power relative to the model you fit in (b).
+
+Multiple R^2 increases from 0.7468 to 0.7518.
+Adjusted R^2 increases from 0.7455 to 0.7502.
+The increase in these values suggests an improvement in explanatory power when adding the interaction term. However, these values alone don't confirm if the improvement is statistically significant. Here we conduct an f-test:
+
+```{r}
+anova(model, model_interaction)
+```
+- The RSS decreases from Model 1 to Model 2, indicating a better fit in Model 2.
+- Since p-value for the f-statistics is 1.236e-11 (extremely low) < 0.05. This indicates that the improvement in the model fit due to the inclusion of the interaction terms is highly statistically significant. So Model 2 provides a substantial and statistically significant improvement in predictive power compared to Model 1. 
+
+e. (4 pts) Using the regression you fit in (c), create appropriate diagnostic plots to assess whether or not the assumptions of the stronger linear model appear reasonable for this data set. For any residual plots you create, it is sufficient for this problem to only create plots with “fitted values” on the x axis (no need to investigate each predictor variable).
+
+```{r}
+plot(model_interaction)
+```
+
+f. (3 pts) A friend wants to use your analysis in (c) to construct a 95% prediction interval for a home he is interested in purchasing in Ames in order to see whether the list price is egregiously high. He provides you the values for the 11 predictor variables involved in your model, and asks you to use R to construct a prediction interval using the formulas we derived in class. In light of your findings in (e), would you have any concerns about fulfilling your friend’s request?
+
+Based on the findings from the diagnostic plots in (e):
+
+- Linearity: No pattern seen in the Residuals vs Fitted plot, we can assume linearity
+
+- Normality: Points fall roughly along a straight line on the normal Q-Q plot, suggesting that residuals are normally distributed
+
+- Homoscedasticity: The Scale-Location plot shows no discernible pattern of the points (randomly scattered), which we can infer homoscedasticity and we know the prediction intervals might not be too wide or too narrow.
+
+- Influential Points: There's only 1 point outside the dashed line Cook's distance. This suggests the model might still be robust but caution is advised. Even though this point is influential, its singularity might imply limited overall impact on the model's predictions.
+
+## Problem 2 (through Lecture 9)
+In this problem we will revisit the Education data set from Homework 2, stored in the data set edu.csv. As a reminder, the data set consists of 300 work-force participants born before 1997 in a rural area. The variables at our disposal are the years of education for an individual, stored as Education, and what their income is (in thousands of dollars), stored as Income. In addition we also have, for each individual, an
+indicator of whether or not they are considered a member of the “Millenial” generation (defined as being born between 1980 and 1996).
+
+a. (4 pts) Run a regression with Income as the response variable, and Education, Millenial, and the interaction between Education and Millenial as the predictor variables. Then, create appropriate diagnostic plots to assess whether or not the assumptions of the stronger linear model appear reasonable for this data set. For any residual plots you create, it is sufficient for this problem to only create plots
+with “fitted values” on the x axis (no need to investigate each predictor variable).
+
+```{r}
+edu <- read.csv("edu.csv")
+edu$Millenial <- factor(edu$Millenial)
+edu_model <- lm(Income ~ Education*Millenial, data = edu)
+summary(edu_model)
+plot(edu_model)
+```
+
+b. (3 pts) Discuss your findings in (a). Do the assumptions of the stronger linear model seem reasonable?
+
+- Linearity: The Residuals vs Fitted plot points to potential non-linearity or differing relationships within subsets of data, particularly between Millenials and non-Millenials. 
+
+- Normality: Points fall roughly along a straight line on the normal Q-Q plot, suggesting that residuals are normally distributed
+
+- Homoscedasticity: The Scale-Location plot indicates issues with constant variance (heteroscedasticity), showing two clusters of data points
+
+- Influential Points: The Residuals vs Leverage plot does not indicate significant issues with influential points.
+
+Based on this, the assumptions of the stronger linear model may not hold true in this case.
+
+c. (3 pts) Construct an appropriate 95% interval for expected income for the population of Millenial residents in the rural area with 8 years of education. Regardless of your answer in (b), you may assume that the stronger linear model holds when forming this interval.
+
+```{r}
+new_data <- data.frame(
+  Education = 8,
+  Millenial = TRUE
+)
+new_data$Millenial <- factor(new_data$Millenial, levels = levels(edu$Millenial))
+conf_int <- predict(edu_model, newdata = new_data, interval = "confidence", level = 0.95)
+conf_int
+
+```
+We’ll now apply our new results to the regression analysis we conducted in Problem 2. For the questions that follow, you should provide numerical answers along with code that generates the requested intervals.
+g. (5 pts) Construct an appropriate 95% interval for the difference in incomes between the following two individuals from the rural area: one person is a millenial with 8 years of education, and the other person is a non-millenial with 7 years of education. You may form any required standard errors by replacing σε with ˆσε, and you may base your intervals off of a t distribution.
+
+```{r}
+c <- data.frame(Education = 8, Millenial = 'TRUE')
+d <- data.frame(Education = 7, Millenial = 'FALSE')
+pred_c <- predict(edu_model, newdata = c)
+pred_d <- predict(edu_model, newdata = d)
+pred_c
+pred_d
+diff_pred <- pred_c - pred_d
+V_beta <- vcov(edu_model)
+diff_vec <- c(1, 8, 1, 8) - c(1, 7, 0, 0)
+se_diff <- sqrt(t(diff_vec) %*% V_beta %*% diff_vec)
+df <- nrow(edu) - length(coef(edu_model))
+t_critical <- qt(0.975, df)
+margin_of_error <- t_critical * se_diff
+lower_bound <- diff_pred - margin_of_error
+upper_bound <- diff_pred + margin_of_error
+conf_interval <- c(lower_bound, upper_bound)
+conf_interval
+```
+h. (4 pts) Construct an appropriate 95% interval for the difference in incomes between two people who share the same values for Millenial and Education. You may form any required standard errors by replacing σε with ˆσε, and you may base your intervals off of a t distribution. If you don’t have enough information to form your interval, explain what additional information you would need.
+
+```{r}
+model_summary <- summary(edu_model)
+sigma_hat <- model_summary$sigma
+df <- nrow(edu) - length(coef(edu_model))
+t_critical <- qt(0.975, df)
+se_diff = sqrt(2) * sigma_hat
+margin_of_error <- t_critical * se_diff
+lower_bound <- 0 - margin_of_error
+upper_bound <- 0 + margin_of_error
+conf_interval <- c(lower_bound, upper_bound)
+conf_interval
+```
+
+
