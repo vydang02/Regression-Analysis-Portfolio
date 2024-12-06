@@ -1,5 +1,3 @@
-Homework 4
-================
 Vy Dang
 2024-10-28
 
@@ -54,7 +52,7 @@ summary(model)
 plot(model)
 ```
 
-![](Homework-4_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->![](Homework-4_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->![](Homework-4_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->![](Homework-4_files/figure-gfm/unnamed-chunk-2-4.png)<!-- -->
+![](unnamed-chunk-2-1.png)![](unnamed-chunk-2-2.png)![](unnamed-chunk-2-3.png)![](unnamed-chunk-2-4.png)
 
 - Linearity: The residuals vs. fitted plot shows the values spread wider
   on the 2 sides than in the middle, and more condensed in the middle.
@@ -212,15 +210,15 @@ epsilon_first_iter <- Epsilon.skew[, 1]
 hist(epsilon_first_iter, breaks = 30, xlab = "Error Terms", col = "lightblue", border = "black")
 ```
 
-![](Homework-4_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](unnamed-chunk-5-1.png)
 
 ``` r
 qqnorm(epsilon_first_iter)
 qqline(epsilon_first_iter, col = "red")
 ```
 
-![](Homework-4_files/figure-gfm/unnamed-chunk-5-2.png)<!-- --> b. (2
-pts) Does the normal distribution provide a reasonable approximation to
+![](unnamed-chunk-5-2.png)
+b. (2pts) Does the normal distribution provide a reasonable approximation to
 the distribution of the sample slope in this simulation? Support your
 answer through an appropriate visualization based upon output from this
 simulation study.
@@ -230,7 +228,7 @@ hist(b1.skew, breaks = 50, probability = TRUE,
      xlab = "Sample Slope Estimates", col = "lightblue", border = "black")
 ```
 
-![](Homework-4_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](unnamed-chunk-6-1.png)
 
 ``` r
 mean_b1 <- mean(b1.skew)
@@ -240,7 +238,7 @@ qqnorm(b1.skew)
 qqline(b1.skew, col = "red", lwd = 2)
 ```
 
-![](Homework-4_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
+![](unnamed-chunk-6-2.png)
 
 The histogram of the slope estimates b1.skew aligns well with the normal
 curve. The points in the Q-Q plot lie largely on the reference line with
@@ -259,7 +257,7 @@ hist(se.skew, breaks = 50, probability = TRUE, main = "Histogram of se.skew",
 abline(v = 0.31, col = "red", lwd = 2)  
 ```
 
-![](Homework-4_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](unnamed-chunk-7-1.png)
 
 ``` r
 mean_se_skew <- mean(se.skew)
@@ -268,7 +266,7 @@ hist(se.skew.hc, breaks = 50, probability = TRUE, main = "Histogram of se.skew.h
 abline(v = 0.31, col = "red", lwd = 2)  
 ```
 
-![](Homework-4_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
+![](unnamed-chunk-7-2.png)
 
 ``` r
 mean_se_skew_hc <- mean(se.skew.hc)
@@ -421,8 +419,8 @@ plot(x, epsilon_het_first_iter,
 abline(h = 0, col = "red", lwd = 2)
 ```
 
-![](Homework-4_files/figure-gfm/unnamed-chunk-10-1.png)<!-- --> We can
-see a “funnel-shaped” pattern where errors spread out more widely as x
+![](unnamed-chunk-10-1.png)
+We can see a “funnel-shaped” pattern where errors spread out more widely as x
 moves away from the center point (here around x = 0.5).
 
 2.  (1 pt) Does the normal approximation provide a reasonable fit for
@@ -434,15 +432,15 @@ hist(b1.het, breaks = 50, probability = TRUE,
      xlab = "Sample Slope Estimates", col = "lightblue", border = "black")
 ```
 
-![](Homework-4_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](unnamed-chunk-11-1.png)
 
 ``` r
 qqnorm(b1.het)
 qqline(b1.het, col = "red", lwd = 2)
 ```
 
-![](Homework-4_files/figure-gfm/unnamed-chunk-11-2.png)<!-- --> The
-histogram of b1.het suggests the normal approximation is reasonable. In
+![](unnamed-chunk-11-2.png)
+The histogram of b1.het suggests the normal approximation is reasonable. In
 the Q-Q plot, the sample quantiles lie along the reference line, it
 indicates that the distribution of b1.het is approximately normal. Given
 the large sample size (n = 100) and the Central Limit Theorem, we expect
@@ -461,7 +459,7 @@ hist(se.het, breaks = 50, probability = TRUE,
 abline(v = 0.427, col = "red", lwd = 2)
 ```
 
-![](Homework-4_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](unnamed-chunk-12-1.png)
 
 ``` r
 mean_se_het <- mean(se.het)
@@ -470,7 +468,7 @@ hist(se.het.hc, breaks = 50, probability = TRUE,
 abline(v = 0.427, col = "red", lwd = 2)
 ```
 
-![](Homework-4_files/figure-gfm/unnamed-chunk-12-2.png)<!-- -->
+![](unnamed-chunk-12-2.png)
 
 ``` r
 mean_se_het_hc <- mean(se.het.hc)
