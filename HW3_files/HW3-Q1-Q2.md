@@ -1,5 +1,3 @@
-HW 3 Q1 Q2
-================
 Vy Dang
 2024-09-30
 
@@ -42,7 +40,7 @@ hist(ames$SalePrice,
      breaks = 30) 
 ```
 
-![](HW3-Q1-Q2_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](unnamed-chunk-2-1.png)
 
 In problems (b)-(d), you may assume that the stronger linear model
 holds. b. (1 pt) Fit a linear regression that predicts SalePrice as a
@@ -184,7 +182,7 @@ anova(model, model_interaction)
 plot(model_interaction)
 ```
 
-![](HW3-Q1-Q2_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->![](HW3-Q1-Q2_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->![](HW3-Q1-Q2_files/figure-gfm/unnamed-chunk-6-3.png)<!-- -->![](HW3-Q1-Q2_files/figure-gfm/unnamed-chunk-6-4.png)<!-- -->
+![](unnamed-chunk-6-1.png)![](unnamed-chunk-6-2.png)![](unnamed-chunk-6-3.png)![](unnamed-chunk-6-4.png)
 
 6.  (3 pts) A friend wants to use your analysis in (c) to construct a
     95% prediction interval for a home he is interested in purchasing in
@@ -266,7 +264,7 @@ summary(edu_model)
 plot(edu_model)
 ```
 
-![](HW3-Q1-Q2_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->![](HW3-Q1-Q2_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->![](HW3-Q1-Q2_files/figure-gfm/unnamed-chunk-7-3.png)<!-- -->![](HW3-Q1-Q2_files/figure-gfm/unnamed-chunk-7-4.png)<!-- -->
+![](unnamed-chunk-7-1.png)![](unnamed-chunk-7-2.png)![](unnamed-chunk-7-3.png)![](unnamed-chunk-7-4.png)
 
 2.  (3 pts) Discuss your findings in (a). Do the assumptions of the
     stronger linear model seem reasonable?
