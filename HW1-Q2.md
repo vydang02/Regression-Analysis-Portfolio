@@ -4,6 +4,10 @@ Vy Dang
 2024-09-03
 
 ``` r
+knitr::opts_chunk$set(fig.path='Figs/')
+```
+
+``` r
 library(ggplot2)
 ```
 
@@ -42,7 +46,7 @@ data |> ggplot(aes(x = Livable.Area, y = Assessment)) + geom_point() +
        y = "Assessment ($)")
 ```
 
-![](HW1-Q2_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](Figs/unnamed-chunk-3-1.png)<!-- -->
 
 2.  (1 pt) Based on the scatterplot, is the association approximately
     linear?
@@ -227,7 +231,7 @@ ggplot(data, aes(x = fitted_values, y = residuals)) +
        y = "Residuals")
 ```
 
-![](HW1-Q2_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](Figs/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
 ggplot(data.frame(residuals = residuals), aes(x = residuals)) +
@@ -238,4 +242,4 @@ ggplot(data.frame(residuals = residuals), aes(x = residuals)) +
        y = "Frequency")
 ```
 
-![](HW1-Q2_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](Figs/unnamed-chunk-11-1.png)<!-- -->
