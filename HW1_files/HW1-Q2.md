@@ -46,7 +46,7 @@ data |> ggplot(aes(x = Livable.Area, y = Assessment)) + geom_point() +
        y = "Assessment ($)")
 ```
 
-![](Figs/unnamed-chunk-3-1.png)<!-- -->
+![](unnamed-chunk-3-1.png)
 
 2.  (1 pt) Based on the scatterplot, is the association approximately
     linear?
@@ -231,7 +231,7 @@ ggplot(data, aes(x = fitted_values, y = residuals)) +
        y = "Residuals")
 ```
 
-![](Figs/unnamed-chunk-10-1.png)<!-- -->
+![](unnamed-chunk-10-1.png)
 
 ``` r
 ggplot(data.frame(residuals = residuals), aes(x = residuals)) +
@@ -242,4 +242,4 @@ ggplot(data.frame(residuals = residuals), aes(x = residuals)) +
        y = "Frequency")
 ```
 
-![](Figs/unnamed-chunk-11-1.png)<!-- -->
+![](unnamed-chunk-11-1.png)
