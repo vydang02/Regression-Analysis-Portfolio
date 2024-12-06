@@ -27,7 +27,7 @@ edu <- read.csv("edu.csv")
 ggplot(edu, aes(y = Income, x = Education)) + geom_point()
 ```
 
-![](HW2-Q1_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](unnamed-chunk-2-1.png)
 
 Given that the scatterplot shows vertical lines for each education level
 without forming any discernible linear pattern, the relationship between
@@ -318,7 +318,9 @@ points(jitter(Education[Millenial == T],1), Income[Millenial == T], pch = 17, ce
 legend("topright", c("Non-Millenial", "Millenial"), pch = c(1, 17), cex = 1, bty = "n")
 ```
 
-![](HW2-Q1_files/figure-gfm/unnamed-chunk-9-1.png)<!-- --> Observation:
+![](unnamed-chunk-9-1.png)
+
+Observation:
 
 Clusters of Points:
 
