@@ -46,9 +46,8 @@ data |> ggplot(aes(x = Livable.Area, y = Assessment)) + geom_point() +
        y = "Assessment ($)")
 ```
 
-![](Figs/unnamed-chunk-3-1.png)<!-- --> git add Figs/unnamed-chunk-3-1.png
-git commit -m "Add plot image for assessment vs livable area"
-git push
+![Figure 1](Figs/unnamed-chunk-3-1.png)
+
 
 2.  (1 pt) Based on the scatterplot, is the association approximately
     linear?
