@@ -46,7 +46,7 @@ data |> ggplot(aes(x = Livable.Area, y = Assessment)) + geom_point() +
        y = "Assessment ($)")
 ```
 
-![](Figs/unnamed-chunk-3-1.png)<!-- -->
+![](Figs/unnamed-chunk-3-1.png)<!-- --> https://github.com/vydang02/STATS-413/blob/5e46b737430f285cb4c5dcdc95610a6ce29d0e08/unnamed-chunk-3-1.png
 
 2.  (1 pt) Based on the scatterplot, is the association approximately
     linear?
