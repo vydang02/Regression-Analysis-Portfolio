@@ -1,4 +1,4 @@
-STATS 413 HW1 Q2, Q3e
+STATS 413 HW1
 ================
 Vy Dang
 2024-09-03
