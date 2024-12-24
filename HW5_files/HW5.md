@@ -68,8 +68,8 @@ ggplot(data, aes(x=fitted_values, y=residuals)) +
   labs(x='Fitted Values', y='Residuals', title='Residuals vs Fitted Values')
 ```
 
-![](unnamed-chunk-1-1.png) The plot
-demonstrates a distinct pattern or curvature within the 20000 to 40000
+![](unnamed-chunk-1-1.png) 
+The plot demonstrates a distinct pattern or curvature within the 20000 to 40000
 range of x value. This implies that the relationship between the
 predictors and the response variable is not entirely linear and a
 nonlinear model might be more appropriate. Transformations of the
@@ -121,7 +121,7 @@ ggplot(data, aes(x=log_fitted_values, y=log_residuals)) +
   labs(x='Fitted Values', y='Residuals', title='Residuals vs Fitted Values (Log Transformed)') 
 ```
 
-![](HW5_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](unnamed-chunk-2-1.png)
 
 ``` r
 ggplot(data, aes(sample=log_residuals)) +
@@ -130,8 +130,8 @@ ggplot(data, aes(sample=log_residuals)) +
   labs(title="QQ Plot of Residuals (Log Transformed)")
 ```
 
-![](HW5_files/figure-gfm/unnamed-chunk-2-2.png)<!-- --> The residuals
-vs. fitted values plot for the log-transformed model appears more
+![](unnamed-chunk-2-2.png) 
+The residuals vs. fitted values plot for the log-transformed model appears more
 randomly scattered around the horizontal line than in the original
 model, this would indicate that the log transformations have improved
 the linearity assumption. In Q-Q plot, the residuals fall mostly along
