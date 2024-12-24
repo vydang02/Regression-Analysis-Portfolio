@@ -68,7 +68,7 @@ ggplot(data, aes(x=fitted_values, y=residuals)) +
   labs(x='Fitted Values', y='Residuals', title='Residuals vs Fitted Values')
 ```
 
-![](HW5_files/figure-gfm/unnamed-chunk-1-1.png)<!-- --> The plot
+(unnamed-chunk-1-1.png) The plot
 demonstrates a distinct pattern or curvature within the 20000 to 40000
 range of x value. This implies that the relationship between the
 predictors and the response variable is not entirely linear and a
