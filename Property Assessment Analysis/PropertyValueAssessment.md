@@ -56,11 +56,6 @@ data |> ggplot(aes(x = Livable.Area, y = Assessment)) + geom_point() +
 ![](unnamed-chunk-3-1.png)
 
 Visual inspection reveals a strong positive linear relationship between livable area and assessment value, confirming the appropriateness of a linear model.
-
-3.  (4 pts) Use R to find the equation for the regression line with
-    Assessment as the response variable and Living Area as the predictor
-    variable. Report the resulting equation (rather than simply showing
-    R output).
     
 ### Regression Analysis and Results
 I developed a simple linear regression model with Assessment as the response variable and Livable Area as the predictor:
@@ -89,48 +84,19 @@ paste("Assessment =", round(intercept,2), "+", round(slope,2), "* Livable Area" 
 
 
 
-> Formal interpretation: Equation: Assessment = β0 + β1 \* Livable Area
+Formal interpretation of Equation: Assessment = β0 + β1 \* Livable Area
 
-The resulting prediction equation:
-Assessment = $168,518.56 + $180.82 × Livable Area
+The resulting prediction equation: Assessment = $168,518.56 + $180.82 × Livable Area
 
-> Holding all other variables equal (ceteris paribus), if two properties
-> differ in their livable area by 1 square foot, then we expect their
-> assessments to differ by β1 units on average. β1 represents the change
-> in the expected assessment for a one-unit increase in the livable area
-> given that other factors are held constant.
+Holding all other variables equal (ceteris paribus), if two properties differ in their livable area by 1 square foot, then we expect their assessments to differ by β1 units on average. β1 represents the change in the expected assessment for a one-unit increase in the livable area given that other factors are held constant.
 
-> Informal interpretation: For every additional square foot of livable
-> area, the property assessment increases by 180.8 dollars on average.
-> This means that a larger house with more livable area will have a
-> higher assessed value. Each additional square foot is valued at
-> approximately 180.8 dollars in terms of property assessment.
+Informal interpretation of Equation: For every additional square foot of livable area, the property assessment increases by 180.8 dollars on average. This means that a larger house with more livable area will have a higher assessed value. Each additional square foot is valued at approximately 180.8 dollars in terms of property assessment.
 
-5.  (3 pts) Interpret the intercept. Initially, do so formally according
-    to the formulation in class. Is there an informal interpretation of
-    the intercept in the context of this problem that might be
-    meaningful, despite the fact that it represents an extrapolation?
 
-> Formal interpretation: The intercept β0 in a linear regression model
-> is interpreted as the expected value of the response variable
-> (Assessment) when all predictor variables (Livable Area) are zero.
-> Mathematically it represents the value of (E(Y\|X=0)). The intercept
-> β0 would be the assessment value predicted for a property with zero
-> square feet of livable area. So formally, (β0 = 168518.6) means that
-> the expected assessment value for a property with zero square feet of
-> livable area is 168518.6 dollars
+Formal interpretation of Intercept: The intercept β0 in a linear regression model is interpreted as the expected value of the response variable (Assessment) when all predictor variables (Livable Area) are zero. Mathematically it represents the value of (E(Y\|X=0)). The intercept β0 would be the assessment value predicted for a property with zero square feet of livable area. So formally, (β0 = 168518.6) means that the expected assessment value for a property with zero square feet of livable area is 168518.6 dollars
 
-> Informal interpretation: Despite the fact that a property with zero
-> square feet of livable area is unrealistic, this value can
-> representthe starting point or base value of the property due to land
-> value or fixed costs that are independent of the livable area.
+Informal interpretation of Intercept: Despite the fact that a property with zero square feet of livable area is unrealistic, this value can representthe starting point or base value of the property due to land value or fixed costs that are independent of the livable area.
 
-6.  (2 pts) What fraction of variation in Assessment is accounted for by
-    Livable Area through our regression model? Report the relevant
-    quantity from the R output. Finally, what fraction of variation is
-    accounted for by other factors besides livable area, such as
-    differences in lot size, condition and quality of the building, and
-    viability of the area?
 
 ``` r
 summary(model)
@@ -155,17 +121,18 @@ summary(model)
     ## Multiple R-squared:  0.7893, Adjusted R-squared:  0.7891 
     ## F-statistic:  6082 on 1 and 1624 DF,  p-value: < 2.2e-16
 
-> Fraction of variation in Assessment accounted for by Livable Area
-> ((R^2)): 0.7893.
+#### Key Findings
 
-> 78.93% of the variation in the Assessment (property value) is
-> explained by the Livable Area in this regression model.
+Fraction of variation in Assessment accounted for by Livable Area ((R^2)): 0.7893. 78.93% of the variation in the Assessment (property value) is
+explained by the Livable Area in this regression model. Fraction of variation in Assessment accounted for by other factors: 1 - R^2 = 1 - 0.7893 = 0.2107. 21.07% of the variation in Assessment is due to other factors besides Livable Area.
 
-> Fraction of variation in Assessment accounted for by other factors:
-> 1 - R^2 = 1 - 0.7893 = 0.2107.
-
-> 21.07% of the variation in Assessment is due to other factors besides
-> Livable Area.
+- Value per Square Foot: Each additional square foot of livable area contributes approximately $180.82 to a property's assessed value
+  
+- Base Property Value: The intercept of $168,518.56 represents the estimated value of land and fixed improvements independent of living space size
+  
+- Model Fit: The model explains 78.9% of variation in property assessments (R² = 0.789)
+  
+- Unexplained Variation: The remaining 21.1% of variation is attributable to factors not included in the model, such as location quality, property condition, and lot characteristics
 
 7.  (2 pts) Point prediction: Based on the fitted equation, what can you
     say about the predicted price for a residence with 2,500 square feet
