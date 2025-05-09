@@ -126,17 +126,19 @@ summary(model)
 Fraction of variation in Assessment accounted for by Livable Area ((R^2)): 0.7893. 78.93% of the variation in the Assessment (property value) is
 explained by the Livable Area in this regression model. Fraction of variation in Assessment accounted for by other factors: 1 - R^2 = 1 - 0.7893 = 0.2107. 21.07% of the variation in Assessment is due to other factors besides Livable Area.
 
-- Value per Square Foot: Each additional square foot of livable area contributes approximately $180.82 to a property's assessed value
+- _Value per Square Foot_: Each additional square foot of livable area contributes approximately $180.82 to a property's assessed value
   
-- Base Property Value: The intercept of $168,518.56 represents the estimated value of land and fixed improvements independent of living space size
+- _Base Property Value_: The intercept of $168,518.56 represents the estimated value of land and fixed improvements independent of living space size
   
-- Model Fit: The model explains 78.9% of variation in property assessments (R² = 0.789)
+- _Model Fit_: The model explains 78.9% of variation in property assessments (R² = 0.789)
   
-- Unexplained Variation: The remaining 21.1% of variation is attributable to factors not included in the model, such as location quality, property condition, and lot characteristics
+- _Unexplained Variation_: The remaining 21.1% of variation is attributable to factors not included in the model, such as location quality, property condition, and lot characteristics
 
-7.  (2 pts) Point prediction: Based on the fitted equation, what can you
-    say about the predicted price for a residence with 2,500 square feet
-    of livable area? Use R to calculate this and show your code.
+### Practical Applications
+
+#### Valuation Predictions
+
+The model enables accurate predictions for property valuations:
 
 ``` r
 new_data <- data.frame(Livable.Area=2500)
@@ -147,14 +149,11 @@ predict_2500_sqft
     ##        1 
     ## 620569.1
 
-8.  (3 pts) Predict the difference in assessed value for two residences
-    where one residence is 200 square feet larger than the other. If you
-    cannot complete your calculation with the information provided,
-    explain why not.
+A 2,500 square foot residence has a predicted assessment of $620,569.10.
 
-> Here we use beta-1 to calculate. The slope can directly be scaled to
-> predict the difference for any unit change in the independent
-> variable.
+#### Comparative Analysis
+
+Here we want to know the difference in assessed value for two residences where one is 200 square feet larger than the other. We will use beta-1 to calculate. The slope can directly be scaled to predict the difference for any unit change in the independent variable.
 
 ``` r
 difference_in_assessment <- slope * 200
@@ -164,21 +163,11 @@ difference_in_assessment
     ## Livable.Area 
     ##     36164.05
 
-> The difference in assessed value for two residences where one is 200
-> square feet larger than the other would be \$36,164.05.
+So two properties differing by 200 square feet in livable area would be expected to differ in assessed value by approximately $36,164.05, holding all other factors constant.
 
-### Problem 3
+### Model Validation
 
-5.  (4 pts) Using the regression of Assessment on Livable Area you
-    conducted in Problem 2, illustrate your findings in Problem 3,
-    parts b) and d). That is, produce code that shows that for the
-    regression of Assessment on Livable Area: • The residuals from this
-    regression have mean zero. • The predicted values and residuals from
-    this regression are uncorrelated. \[Note: you may see very small but
-    nonzero numbers come up in your numerical verifications, for
-    instance 2 × 10−16 or something of a similar magnitude. Consider
-    these as true zeroes - the departures from zero are artifacts of
-    machine precision.\]
+Statistical validation confirms the model's reliability:
 
 ``` r
 residuals <- residuals(model)
@@ -217,3 +206,21 @@ ggplot(data.frame(residuals = residuals), aes(x = residuals)) +
 ```
 
 ![](unnamed-chunk-11-1.png)
+
+- _Unbiased Estimation:_ Residuals have mean zero, confirming unbiased estimation
+
+- _Linearity Validation:_ Predicted values and residuals are uncorrelated
+  
+- _Distribution of Residuals:_ Histogram shows approximately normal distribution with some outliers
+
+### Business Implications
+
+This analysis provides:
+
+- **Assessment Benchmarking:** A tool for homeowners to evaluate whether their property assessment is in line with similar properties
+  
+- **Valuation Framework:** A simple formula for real estate professionals to estimate property values based on square footage
+  
+- **Tax Authority Guidance:** Insights for tax assessors on the quantitative relationship between property size and value
+  
+- **Market Transparency:** Increased transparency in understanding how property characteristics translate to market value
