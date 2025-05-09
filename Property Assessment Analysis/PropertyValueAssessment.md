@@ -28,7 +28,7 @@ outdated after a few years, towns have to hire assessors and update the
 assessments every so often. There are of course several factors that
 play a role in assessing the value of a property, such as square feet of
 livable area, size of the lot (land), quality and condition of the
-building, and desirability of the area. We will only consider square
+building, and desirability of the area. I will only consider square
 feet of livable area. The following exercise can be used to check for
 any property whether its assessed value is in line or out of line with
 other properties of similar size in terms of livable area. This data set
