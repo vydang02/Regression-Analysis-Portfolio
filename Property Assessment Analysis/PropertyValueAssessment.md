@@ -62,8 +62,8 @@ Visual inspection reveals a strong positive linear relationship between livable 
     variable. Report the resulting equation (rather than simply showing
     R output).
     
-### Initial Model Development
-I first constructed a multiple regression model with LogAuctionIndex as the response variable:
+### Regression Analysis and Results
+I developed a simple linear regression model with Assessment as the response variable and Livable Area as the predictor:
 
 ``` r
 model <- lm(Assessment~Livable.Area, data = data)
@@ -87,12 +87,12 @@ paste("Assessment =", round(intercept,2), "+", round(slope,2), "* Livable Area" 
 
     ## [1] "Assessment = 168518.56 + 180.82 * Livable Area"
 
-4.  (3 pts) Interpret the slope. Initially, do so first formally
-    according to the formulation from class. Then, give an informal
-    interpretation in terms of the average value of a square foot of
-    livable area.
+
 
 > Formal interpretation: Equation: Assessment = β0 + β1 \* Livable Area
+
+The resulting prediction equation:
+Assessment = $168,518.56 + $180.82 × Livable Area
 
 > Holding all other variables equal (ceteris paribus), if two properties
 > differ in their livable area by 1 square foot, then we expect their
