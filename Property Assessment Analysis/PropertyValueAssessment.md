@@ -42,9 +42,6 @@ The dataset contains auction indices and various predictors including:
 
 ## Methodology and Results
 
-### Initial Model Development
-I first constructed a multiple regression model with LogAuctionIndex as the response variable:
-
 ``` r
 data <- read.csv('Residential_Property_Assessments.csv')
 ```
@@ -71,6 +68,9 @@ data |> ggplot(aes(x = Livable.Area, y = Assessment)) + geom_point() +
     Assessment as the response variable and Living Area as the predictor
     variable. Report the resulting equation (rather than simply showing
     R output).
+    
+### Initial Model Development
+I first constructed a multiple regression model with LogAuctionIndex as the response variable:
 
 ``` r
 model <- lm(Assessment~Livable.Area, data = data)
