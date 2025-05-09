@@ -1,21 +1,28 @@
 Vy Dang
 2024-09-19
 
-### Problem 1 (Through lecture 6)
+# Education-Income Analysis: Generational Impact on Returns to Education
 
-We have data from a simple random sample of 300 work-force participants
-born before 1997 in a rural area. Using this data, we will try to
-understand the relationship between education and income within this
-area. Among the variables at our disposal are the years of education for
-an individual, stored as Education, and what their income is (in
-thousands of dollars), stored as Income. The data is stored in the data
-set edu.csv. In the questions that follow, you may assume that the
-requisite assumptions needed constructing confidence intervals and
-performing hypothesis tests using R’s multiple regression output hold.
+## Executive Summary
 
-1.  (2 pts) Provide a scatterplot with Income on the y-axis and
-    Education on the x. Discuss whether the relationship seems linear,
-    and whether the association appears to be positive or negative.
+This analysis explores the complex relationship between educational attainment and income levels across different generations. Using data from 300 workforce participants in a rural area, I developed statistical models that reveal how the financial returns to education vary significantly between Millennial and non-Millennial workers. The findings provide valuable insights for workforce development initiatives, educational institutions, and policy makers focused on economic advancement in rural communities.
+
+## Research Context
+
+Understanding the economic returns to education is crucial for individual career planning and public policy development. This study examines whether the widely accepted positive relationship between education and income holds consistently across different generational cohorts in a rural context.
+
+## Data Overview
+
+The dataset includes information from 300 workforce participants born before 1997 in a rural area:
+- Years of education completed
+- Income (in thousands of dollars)
+- Generational status (Millennial vs. non-Millennial)
+
+Millennials are defined as individuals born between 1980 and 1996.
+
+## Initial Analysis: Aggregate Relationship
+
+Initial exploratory data visualization revealed a complex pattern between education and income that warranted further investigation:
 
 ``` r
 edu <- read.csv("edu.csv")
