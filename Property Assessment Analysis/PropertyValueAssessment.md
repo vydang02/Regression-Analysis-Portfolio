@@ -13,7 +13,10 @@ library(ggplot2)
 
     ## Warning: package 'ggplot2' was built under R version 4.2.3
 
-### Problem 2
+# Wine Auction Price Prediction: Modeling Factors Affecting Bordeaux Values
+
+## Executive Summary
+This analysis examines the factors influencing auction prices of Bordeaux wines using regression techniques. By analyzing 46 observations of vintage years auctioned in 2015, I identified key predictors of wine valuation and addressed multicollinearity challenges through advanced regression approaches.
 
 For historical reasons the US has a system of taxing homeowners to fund
 a large fraction of local in- frastructure such as local primary, middle
@@ -30,6 +33,17 @@ feet of livable area. The following exercise can be used to check for
 any property whether its assessed value is in line or out of line with
 other properties of similar size in terms of livable area. This data set
 is called Residential Property Assessments.csv.
+
+## Data Overview
+The dataset contains auction indices and various predictors including:
+- Weather conditions (Winter/Harvest Rain, Growing/Harvest Temperature)
+- Age of wine
+- Market factors (French Population, US Alcohol Consumption)
+
+## Methodology and Results
+
+### Initial Model Development
+I first constructed a multiple regression model with LogAuctionIndex as the response variable:
 
 ``` r
 data <- read.csv('Residential_Property_Assessments.csv')
