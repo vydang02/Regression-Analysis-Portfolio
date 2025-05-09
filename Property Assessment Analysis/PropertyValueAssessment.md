@@ -1,5 +1,5 @@
 # Property Value Assessment: Statistical Analysis of Residential Property Valuations
-================
+
 Vy Dang
 2024-09-03
 
