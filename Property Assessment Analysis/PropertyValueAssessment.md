@@ -84,18 +84,18 @@ paste("Assessment =", round(intercept,2), "+", round(slope,2), "* Livable Area" 
 
 
 
-Formal interpretation of Equation: Assessment = β0 + β1 \* Livable Area
+**_Formal interpretation of Equation_:** Assessment = β0 + β1 \* Livable Area
 
 The resulting prediction equation: Assessment = $168,518.56 + $180.82 × Livable Area
 
 Holding all other variables equal (ceteris paribus), if two properties differ in their livable area by 1 square foot, then we expect their assessments to differ by β1 units on average. β1 represents the change in the expected assessment for a one-unit increase in the livable area given that other factors are held constant.
 
-Informal interpretation of Equation: For every additional square foot of livable area, the property assessment increases by 180.8 dollars on average. This means that a larger house with more livable area will have a higher assessed value. Each additional square foot is valued at approximately 180.8 dollars in terms of property assessment.
+**_Informal interpretation of Equation:_** For every additional square foot of livable area, the property assessment increases by 180.8 dollars on average. This means that a larger house with more livable area will have a higher assessed value. Each additional square foot is valued at approximately 180.8 dollars in terms of property assessment.
 
 
-Formal interpretation of Intercept: The intercept β0 in a linear regression model is interpreted as the expected value of the response variable (Assessment) when all predictor variables (Livable Area) are zero. Mathematically it represents the value of (E(Y\|X=0)). The intercept β0 would be the assessment value predicted for a property with zero square feet of livable area. So formally, (β0 = 168518.6) means that the expected assessment value for a property with zero square feet of livable area is 168518.6 dollars
+**_Formal interpretation of Intercept:_** The intercept β0 in a linear regression model is interpreted as the expected value of the response variable (Assessment) when all predictor variables (Livable Area) are zero. Mathematically it represents the value of (E(Y\|X=0)). The intercept β0 would be the assessment value predicted for a property with zero square feet of livable area. So formally, (β0 = 168518.6) means that the expected assessment value for a property with zero square feet of livable area is 168518.6 dollars
 
-Informal interpretation of Intercept: Despite the fact that a property with zero square feet of livable area is unrealistic, this value can representthe starting point or base value of the property due to land value or fixed costs that are independent of the livable area.
+**_Informal interpretation of Intercept:_** Despite the fact that a property with zero square feet of livable area is unrealistic, this value can representthe starting point or base value of the property due to land value or fixed costs that are independent of the livable area.
 
 
 ``` r
