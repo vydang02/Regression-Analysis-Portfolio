@@ -1,4 +1,4 @@
-Property-Assessment-Analysis
+# Property Value Assessment: Statistical Analysis of Residential Property Valuations
 ================
 Vy Dang
 2024-09-03
@@ -12,8 +12,6 @@ library(ggplot2)
 ```
 
     ## Warning: package 'ggplot2' was built under R version 4.2.3
-
-# Property Value Assessment: Statistical Analysis of Residential Property Valuations
 
 ## Executive Summary
 This analysis examines the statistical relationship between property size and assessed value using regression techniques. By analyzing a comprehensive dataset of residential properties, I developed a predictive model that quantifies how livable area contributes to property valuation. This model provides valuable insights for property owners, tax authorities, and real estate professionals.
