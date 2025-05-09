@@ -46,10 +46,6 @@ I implemented a linear regression model to quantify the relationship between the
 data <- read.csv('Residential_Property_Assessments.csv')
 ```
 
-1.  (2 pts) Show a scatterplot of Assessment against Livable Area (i.e.,
-    Assessment is the y variable, and Livable Area is the x variable).
-    Add a main title along with axis labels.
-
 ``` r
 data |> ggplot(aes(x = Livable.Area, y = Assessment)) + geom_point() +
   labs(title = "Assessment vs Livable Area",
@@ -59,10 +55,7 @@ data |> ggplot(aes(x = Livable.Area, y = Assessment)) + geom_point() +
 
 ![](unnamed-chunk-3-1.png)
 
-2.  (1 pt) Based on the scatterplot, is the association approximately
-    linear?
-
-> The association is approximately linear based on the scatterplot.
+Visual inspection reveals a strong positive linear relationship between livable area and assessment value, confirming the appropriateness of a linear model.
 
 3.  (4 pts) Use R to find the equation for the regression line with
     Assessment as the response variable and Living Area as the predictor
