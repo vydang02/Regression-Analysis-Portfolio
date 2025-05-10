@@ -161,28 +161,8 @@ uncertainty around the slope than those obtained using ordinary least
 squares standard errors. So this calculation in part c might have better
 coverage than coverage in part b.
 
-## Problem 2 (through lecture 14)
-
-Using the x values from the data file, we will now generate new data
-sets through a generative process in which the assumption of normality
-of residuals does not hold. As a result, the extent to which method for
-inference derived under the stronger linear model continue to be valid
-is unclear at the onset. The simulation code generates 10,000 data sets,
-each of size n = 100, with yi = 1 + 5xi + εi, where εi still have
-expectation zero but instead follow a right-skewed distribution. For
-this simulation, SD(εi) = σε = √0.75, and SD( ˆβ1) = 0.31. Execute the
-simulation code for problem 2, found in the R script accompanying this
-assignment. The vectors b1.skew, se.skew, and se.skew.hc contain the
-estimated slope coefficient, standard error for the slope coefficient
-derived under homoskedasticity, and the standard error using
-heteroskedasticity-consistent standard errors respectively for each of
-the 10,000 simulated data sets. The 100 × 10, 000 matrix Epsilon.skew
-contains the random error terms εi for each data set.
-
-1.  (1 pt) Visualize the distribution of the error terms from the first
-    iteration of this simulation, stored in Epsilon.skew\[,1\], to
-    confirm that they are not normally distributed. Provide a histogram
-    and a normal quantile plot reflecting this.
+### Error Distribution Analysis
+The simulated errors exhibit clear right-skewness:
 
 ``` r
 x <- xy$x
@@ -222,10 +202,9 @@ qqline(epsilon_first_iter, col = "red")
 ```
 
 ![](unnamed-chunk-5-2.png)
-b. (2pts) Does the normal distribution provide a reasonable approximation to
-the distribution of the sample slope in this simulation? Support your
-answer through an appropriate visualization based upon output from this
-simulation study.
+
+### Sampling Distribution of Slope Estimates
+Despite non-normal errors, the sampling distribution of slope estimates remains approximately normal:
 
 ``` r
 hist(b1.skew, breaks = 50, probability = TRUE,
@@ -250,10 +229,10 @@ minor deviations. Despite the non-normality of the residuals, the
 sampling distribution of β1^ approximates a normal distribution
 reasonably well.
 
-3.  (2 pts) Create a histogram for the distributions of se.skew and
-    se.skew.hc. Do the means of these histograms roughly align with the
-    the true value of the standard deviation for the slope, SD( ˆβ1) =
-    0.31?
+This demonstrates the Central Limit Theorem in action - the asymptotic normality of OLS estimators holds even under non-normal errors.
+
+### Standard Error Accuracy
+Both standard and robust standard errors provide reasonable estimates:
 
 ``` r
 hist(se.skew, breaks = 50, probability = TRUE, main = "Histogram of se.skew",
@@ -288,11 +267,13 @@ mean_se_skew_hc
 The means are close to 0.31, so the standard errors are reasonably
 accurate.
 
-4.  (2 pts) Write code which finds the upper and lower bounds of 95%
-    confidence intervals for the population slope based upon the t
-    distribution in each of the 10,000 data sets. Create two sets of
-    confidence intervals: one using se.skew as the standard error, and
-    another using se.skew.hc as the standard error.
+| Method | Mean SE | True SD |
+|--------|---------|---------|
+| Standard | 0.306 | 0.31 |
+| Robust HC | 0.303 | 0.31 |
+
+### Confidence Interval Coverage
+I evaluated the actual coverage of nominal 95% confidence intervals:
 
 ``` r
 alpha <- 0.05
@@ -335,16 +316,6 @@ head(cbind(lower_bounds_se_hc, upper_bounds_se_hc))
     ## [5,]           4.294420           5.425986
     ## [6,]           4.152039           4.988037
 
-5.  (5 pts) Use these upper and lower bounds to estimate the true
-    coverage of your confidence intervals (that is, the true probability
-    that intervals constructed in this fashion capture the population
-    slope) using se.skew and se.skew.hc. Show your code along with your
-    answer. Discuss your findings, and in particular what they suggest
-    about the impact of non-normality in the residuals on inference
-    conducted assuming the truth of the simple regression model when n
-    is reasonably large (here, n = 100). Describe how your findings
-    reflect a theorem from class.
-
 ``` r
 true_slope <- 5
 coverage_se <- mean(lower_bounds_se <= true_slope & upper_bounds_se >= true_slope)
@@ -375,25 +346,16 @@ reliable in the presence of heteroskedasticity, the traditional standard
 errors provide close to nominal coverage due to the asymptotic
 properties of OLS estimators as demonstrated by the simulations.
 
-## Problem 3 (through lecture 13)
+**Results:**
+- Standard CI coverage: 95.3%
+- Robust CI coverage: 95.3%
 
-Using the x values from the data file, we will now generate new data
-sets through a generative process in which the assumption of
-homoskedasticity does not hold. The simulation code a generates 10,000
-data sets, each of size n = 100, with yi = 1 + 5xi + εi, where εi are
-now mean zero and normally distributed. For this simulation SD( ˆβ1) =
-0.427, but Var(εi \| xi) varies as a function of xi. Execute the
-simulation code for problem 3. The vectors b1.het, se.het, and se.het.hc
-contain the estimated slope coefficient, standard error for the slope
-coefficient assuming homoskedasticity, and the heteroskedasticity
-consistent standard error respectively for each of the 10,000 simulated
-data sets, computed using the formulae we derived in class (which assume
-the truth of the simple regression model). The 100 × 10, 000 matrix
-Epsilon.het contains the random error terms for each data set.
+Both methods achieve approximately nominal coverage, confirming the robustness of OLS inference to non-normality in moderate sample sizes.
 
-1.  (2 pts) Show a scatter plot with x on the x axis and
-    Epsilon.het\[,1\] on the y axis. Describe the nature of the
-    heteroskedasticity present here.
+## Part III: Simulation Study - Heteroscedasticity
+
+### Methodology
+I generated data with heteroscedastic errors where variance depends on x:
 
 ``` r
 Sigma <- diag((3.6 * sqrt(.75) * abs(x - 1/2)))^2
@@ -424,12 +386,10 @@ abline(h = 0, col = "red", lwd = 2)
 ```
 
 ![](unnamed-chunk-10-1.png)
-We can see a “funnel-shaped” pattern where errors spread out more widely as x
-moves away from the center point (here around x = 0.5).
 
-2.  (1 pt) Does the normal approximation provide a reasonable fit for
-    the distribution of the sample slopes in this simulation? Support
-    your answer through an appropriate visualization.
+### Heteroscedasticity Pattern
+The error variance exhibits a clear V-shaped pattern: We can see a “funnel-shaped” pattern where errors spread out more widely as x
+moves away from the center point (here around x = 0.5).
 
 ``` r
 hist(b1.het, breaks = 50, probability = TRUE,
@@ -444,18 +404,14 @@ qqline(b1.het, col = "red", lwd = 2)
 ```
 
 ![](unnamed-chunk-11-2.png)
+
 The histogram of b1.het suggests the normal approximation is reasonable. In
 the Q-Q plot, the sample quantiles lie along the reference line, it
 indicates that the distribution of b1.het is approximately normal. Given
 the large sample size (n = 100) and the Central Limit Theorem, we expect
 the distribution of the sample slopes to be approximately normal.
 
-3.  (2 pts) Create a histogram for the distributions of se.het and
-    se.het.hc. How do the means of these distributions compare with the
-    true value of the standard deviation for the slope, SD( ˆβ1) =
-    0.427? What does this reflect about the appropriateness of the
-    standard errors derived under homoskedasticity and the
-    heteroskedasticity-consistent standard errors in this situation?
+### Impact on Standard Errors
 
 ``` r
 hist(se.het, breaks = 50, probability = TRUE,
@@ -503,12 +459,15 @@ mean_se_het_hc
   standard errors are more suitable when heteroskedasticity is present
   in the data.
 
-4.  (2 pts) Create code which finds the upper and lower bounds of a 95%
-    confidence interval for the population slope based upon the t
-    distribution in each of the 10,000 data sets using the formula we
-    derived in class based on the t-distribution. Create two sets of
-    confidence intervals: one using se.het as a standard error, and one
-    using se.het.hc.
+  | Method | Mean SE | True SD |
+|--------|---------|---------|
+| Standard | 0.309 | 0.427 |
+| Robust HC | 0.421 | 0.427 |
+
+Standard errors assuming homoscedasticity substantially underestimate the true variability, while heteroscedasticity-consistent standard errors provide accurate estimates.
+
+### Confidence Interval Coverage
+The underestimation of standard errors leads to inadequate coverage:
 
 ``` r
 alpha <- 0.05
@@ -550,13 +509,6 @@ head(cbind(lower_bounds_se_het_hc, upper_bounds_se_het_hc))
     ## [5,]               4.244126               5.617241
     ## [6,]               4.172416               5.413956
 
-5.  (5 pts) Use these upper and lower bounds to estimate the true
-    coverage of your confidence intervals (that is, the true probability
-    that intervals constructed in this fashion capture the population
-    slope) using se.het and se.het.hc. Show your code along with your
-    answer. Discuss your findings, and in particular what they suggest
-    about the potential impact of heteroskedasticity on inference.
-
 ``` r
 library(sandwich)
 true_slope <- 5
@@ -587,3 +539,50 @@ coverage_se_het_hc
   the true population slope. This shows how
   heteroskedasticity-consistent standard errors suitable for inference
   under heteroskedastic conditions.
+
+**Results:**
+- Standard CI coverage: 84.0% (nominal 95%)
+- Robust CI coverage: 94.4% (nominal 95%)
+
+Standard confidence intervals fail to achieve nominal coverage, while robust methods maintain proper coverage rates.
+
+## Key Findings and Recommendations
+
+### 1. Robustness to Non-Normality
+- OLS estimators maintain good properties under non-normal errors
+- Standard inference procedures remain valid with moderate sample sizes
+- The Central Limit Theorem provides protection against non-normality
+
+### 2. Sensitivity to Heteroscedasticity
+- Heteroscedasticity severely impacts standard error accuracy
+- Standard confidence intervals suffer from undercoverage
+- Robust standard errors are essential when variance is non-constant
+
+### 3. Practical Guidelines
+1. **Always perform diagnostic checks** before relying on regression results
+2. **Use robust standard errors** when heteroscedasticity is suspected
+3. **Consider larger sample sizes** when dealing with non-normal errors
+4. **Be cautious with prediction intervals** under violated assumptions
+
+## Business Applications
+
+### Risk Management
+Understanding the limitations of standard regression methods is crucial for:
+- Financial modeling and forecasting
+- Quality control in manufacturing
+- Economic policy analysis
+
+### Decision Support
+These findings help analysts:
+- Choose appropriate inference methods
+- Communicate uncertainty accurately
+- Make more reliable predictions
+
+### Model Validation
+The diagnostic approach demonstrated here provides a framework for:
+- Assessing model reliability
+- Identifying potential issues
+- Selecting robust alternatives
+
+## Conclusion
+This analysis demonstrates that while OLS regression is remarkably robust to non-normality, heteroscedasticity poses serious challenges to standard inference procedures. The simulation results strongly support the use of heteroscedasticity-consistent standard errors in practice, particularly when diagnostic tests suggest non-constant variance. These findings underscore the importance of thorough model diagnostics and the value of robust inference methods in applied statistical work.
