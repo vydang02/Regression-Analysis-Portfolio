@@ -45,10 +45,12 @@ hist(ames$SalePrice,
 
 ![](unnamed-chunk-2-1.png)
 
-In problems (b)-(d), you may assume that the stronger linear model
-holds. b. (1 pt) Fit a linear regression that predicts SalePrice as a
-linear function of all of the other variables in the data set (i.e., all
-of the other columns of the data set)
+The distribution shows positive skewness, with most homes selling below $200,000 but a long tail extending to higher-value properties.
+
+## Regression Analysis
+
+### Baseline Model
+I developed an initial multiple regression model with all available predictors:
 
 ``` r
 model <- lm(SalePrice ~ ., data = ames)
@@ -87,10 +89,17 @@ summary(model)
     ## Multiple R-squared:  0.7468, Adjusted R-squared:  0.7455 
     ## F-statistic: 594.6 on 14 and 2823 DF,  p-value: < 2.2e-16
 
-3.  (2 pts) Fit a new linear model that predicts SalePrice as a linear
-    function of the other variables in the data set, and that
-    additionally allows the slope coefficient on LivArea to vary as a
-    function of BldgType.
+**Key Results**:
+- Model R² = 0.747, indicating the model explains 74.7% of variance in sale prices
+- Adjusted R² = 0.746, showing minimal overfitting
+- Highly significant predictors include:
+  - Living area (p < 0.001)
+  - Year built (p < 0.001)
+  - Fireplaces (p < 0.001)
+  - Garage area (p < 0.001)
+
+### Enhanced Model with Interaction Effects
+Recognizing that the relationship between living area and price may vary by building type, I developed an enhanced model incorporating interaction effects:
 
 ``` r
 model_interaction <- lm(SalePrice ~ . + LivArea:BldgType, data = ames)
@@ -132,15 +141,13 @@ summary(model_interaction)
     ## Residual standard error: 35070 on 2819 degrees of freedom
     ## Multiple R-squared:  0.7518, Adjusted R-squared:  0.7502 
     ## F-statistic: 474.4 on 18 and 2819 DF,  p-value: < 2.2e-16
-
-4.  (4 pts) Compare the R2 between the regression models you fit in (b)
-    and (c). Based on this comparison alone, can you determine whether
-    the model you fit in (c) provides a statistically significant
-    improve- ment in predictive power relative to the model you fit in
-    (b)? If so, explain why. If not, present an analysis which entitles
-    you to a determination of whether the model you fit in (c) provides
-    a substantial improvement in predictive power relative to the model
-    you fit in (b).
+    
+**Model Comparison**:
+- The enhanced model achieves R² = 0.752 (improvement from 0.747)
+- Adjusted R² increases to 0.750
+- F-test confirms significant improvement (p < 0.001)
+  
+### Statistical Testing
 
 Multiple R^2 increases from 0.7468 to 0.7518. Adjusted R^2 increases
 from 0.7455 to 0.7502. The increase in these values suggests an
@@ -174,12 +181,10 @@ anova(model, model_interaction)
   significant. So Model 2 provides a substantial and statistically
   significant improvement in predictive power compared to Model 1.
 
-5.  (4 pts) Using the regression you fit in (c), create appropriate
-    diagnostic plots to assess whether or not the assumptions of the
-    stronger linear model appear reasonable for this data set. For any
-    residual plots you create, it is sufficient for this problem to only
-    create plots with “fitted values” on the x axis (no need to
-    investigate each predictor variable).
+The F-test results (F = 14.39, p = 1.236e-11) provide strong statistical evidence that the interaction model significantly improves predictive power. This confirms that building type modifies the relationship between living area and sale price.
+
+## Diagnostic Analysis
+Model diagnostic plots reveal the appropriateness of our linear model assumptions:
 
 ``` r
 plot(model_interaction)
@@ -187,53 +192,97 @@ plot(model_interaction)
 
 ![](unnamed-chunk-6-1.png)![](unnamed-chunk-6-2.png)![](unnamed-chunk-6-3.png)![](unnamed-chunk-6-4.png)
 
-6.  (3 pts) A friend wants to use your analysis in (c) to construct a
-    95% prediction interval for a home he is interested in purchasing in
-    Ames in order to see whether the list price is egregiously high. He
-    provides you the values for the 11 predictor variables involved in
-    your model, and asks you to use R to construct a prediction interval
-    using the formulas we derived in class. In light of your findings in
-    (e), would you have any concerns about fulfilling your friend’s
-    request?
+**Key Findings**: Based on the findings from the diagnostic plots:
 
-Based on the findings from the diagnostic plots in (e):
-
-- Linearity: No pattern seen in the Residuals vs Fitted plot, we can
+- **Linearity:** No pattern seen in the Residuals vs Fitted plot, we can
   assume linearity
 
-- Normality: Points fall roughly along a straight line on the normal Q-Q
+- **Normality:** Points fall roughly along a straight line on the normal Q-Q
   plot, suggesting that residuals are normally distributed
 
-- Homoscedasticity: The Scale-Location plot shows no discernible pattern
+- **Homoscedasticity:** The Scale-Location plot shows no discernible pattern
   of the points (randomly scattered), which we can infer
   homoscedasticity and we know the prediction intervals might not be too
   wide or too narrow.
 
-- Influential Points: There’s only 1 point outside the dashed line
+- **Influential Points:** There’s only 1 point outside the dashed line
   Cook’s distance. This suggests the model might still be robust but
   caution is advised. Even though this point is influential, its
   singularity might imply limited overall impact on the model’s
   predictions.
 
-## Problem 2 (through Lecture 9)
+## Key Insights
 
-In this problem we will revisit the Education data set from Homework 2,
-stored in the data set edu.csv. As a reminder, the data set consists of
-300 work-force participants born before 1997 in a rural area. The
-variables at our disposal are the years of education for an individual,
-stored as Education, and what their income is (in thousands of dollars),
-stored as Income. In addition we also have, for each individual, an
-indicator of whether or not they are considered a member of the
-“Millenial” generation (defined as being born between 1980 and 1996).
+### 1. Living Area Impact Varies by Building Type
+The interaction analysis reveals that each additional square foot of living area affects price differently across building types:
+- Single-family homes: $77.63 per sq ft
+- Two-family conversions: $55.86 per sq ft (-$21.77 difference)
+- Duplexes: $57.75 per sq ft (-$19.88 difference)
+- Townhouses: $53.43 per sq ft (-$24.20 difference)
+- End-unit townhouses: $128.02 per sq ft (+$50.39 difference)
 
-1.  (4 pts) Run a regression with Income as the response variable, and
-    Education, Millenial, and the interaction between Education and
-    Millenial as the predictor variables. Then, create appropriate
-    diagnostic plots to assess whether or not the assumptions of the
-    stronger linear model appear reasonable for this data set. For any
-    residual plots you create, it is sufficient for this problem to only
-    create plots with “fitted values” on the x axis (no need to
-    investigate each predictor variable).
+### 2. Non-Linear Effects
+The significant interactions demonstrate that simple linear models fail to capture the full complexity of the housing market. The premium for additional space varies substantially by property type.
+
+### 3. Other Key Drivers
+Beyond living area, several factors significantly influence home prices:
+- Year built: $860 increase per year newer
+- Fireplaces: $13,280 premium per fireplace
+- Garage area: $60 per square foot
+- Pool area: $102 decrease per square foot (counterintuitive result worth investigating)
+
+## Business Applications
+
+### For Real Estate Professionals
+- Use differentiated pricing strategies based on building type
+- Better inform clients about the value of square footage in different property types
+- Provide more accurate comparative market analyses
+
+### For Home Buyers
+- Understand how property type affects the value of additional living space
+- Make informed decisions about trade-offs between size and property type
+- Better evaluate listing prices against market expectations
+
+### For Home Sellers
+- Optimize listing prices based on specific property characteristics
+- Understand which improvements provide the best return on investment
+- Set realistic expectations for property valuation
+
+## Model Limitations and Considerations
+
+1. **High-Leverage Points**: One property shows disproportionate influence on the model, suggesting potential outliers or unique properties
+2. **Temporal Factors**: The model includes year sold but may not fully capture market dynamics over time
+3. **Geographic Factors**: The model doesn't include neighborhood or location-specific variables
+4. **Market Conditions**: External economic factors aren't directly included
+
+## Conclusions
+This analysis demonstrates the importance of considering interaction effects in housing price models. The relationship between living area and price varies significantly by building type, with end-unit townhouses commanding the highest premium per square foot and standard townhouses the lowest. These insights can help all market participants make more informed decisions.
+
+Future enhancements could include:
+- Incorporating neighborhood effects
+- Adding economic indicators
+- Exploring non-linear relationships for other variables
+- Developing separate models for different market segments
+
+  
+# Education-Income Relationship: Extended Analysis with Diagnostic Validation
+
+## Executive Summary
+This analysis extends previous research on the education-income relationship by conducting thorough diagnostic testing and developing robust prediction intervals. Using data from 300 workforce participants in a rural area, I examine how the relationship between education and income varies by generation while assessing model validity and providing practical prediction tools for income estimation.
+
+## Project Overview
+Building on prior findings that revealed differential returns to education across generations, this analysis focuses on validating model assumptions and developing practical applications for income prediction. The study addresses critical questions about model reliability and provides tools for accurate income forecasting.
+
+## Data and Context
+The dataset comprises 300 workforce participants from a rural area, with key variables:
+- **Income**: Annual income in thousands of dollars
+- **Education**: Years of formal education completed
+- **Millennial**: Generational status indicator (born 1980-1996)
+
+## Model Development and Validation
+
+### Regression Model with Interaction Effects
+I developed a comprehensive model incorporating both main effects and interaction terms:
 
 ``` r
 edu <- read.csv("edu.csv")
@@ -263,36 +312,51 @@ summary(edu_model)
     ## Multiple R-squared:  0.5654, Adjusted R-squared:  0.561 
     ## F-statistic: 128.3 on 3 and 296 DF,  p-value: < 2.2e-16
 
+**Model Results**:
+- R² = 0.565, explaining 56.5% of income variation
+- Significant generational baseline differences (p < 0.001)
+- Positive education effects within each generation
+- Non-significant interaction term (p = 0.664)
+
+### Diagnostic Analysis
+To assess model validity, I conducted comprehensive diagnostic testing:
+
 ``` r
 plot(edu_model)
 ```
 
 ![](unnamed-chunk-7-1.png)![](unnamed-chunk-7-2.png)![](unnamed-chunk-7-3.png)![](unnamed-chunk-7-4.png)
 
-2.  (3 pts) Discuss your findings in (a). Do the assumptions of the
-    stronger linear model seem reasonable?
+#### Key Diagnostic Findings:
 
-- Linearity: The Residuals vs Fitted plot points to potential
+- **Linearity:** The Residuals vs Fitted plot points to potential
   non-linearity or differing relationships within subsets of data,
   particularly between Millenials and non-Millenials.
 
-- Normality: Points fall roughly along a straight line on the normal Q-Q
+- **Normality:** Points fall roughly along a straight line on the normal Q-Q
   plot, suggesting that residuals are normally distributed
 
-- Homoscedasticity: The Scale-Location plot indicates issues with
+- **Homoscedasticity:** The Scale-Location plot indicates issues with
   constant variance (heteroscedasticity), showing two clusters of data
   points
 
-- Influential Points: The Residuals vs Leverage plot does not indicate
+- **Influential Points:** The Residuals vs Leverage plot does not indicate
   significant issues with influential points.
+
+### Model Limitations and Considerations
 
 Based on this, the assumptions of the stronger linear model may not hold
 true in this case.
 
-3.  (3 pts) Construct an appropriate 95% interval for expected income
-    for the population of Millenial residents in the rural area with 8
-    years of education. Regardless of your answer in (b), you may assume
-    that the stronger linear model holds when forming this interval.
+Based on diagnostic analysis:
+- The assumptions of the classical linear model are partially violated
+- Heteroscedasticity may affect the precision of standard errors
+- Despite limitations, the model provides valuable insights into generational differences
+
+## Practical Applications: Income Prediction
+
+### Confidence Intervals for Expected Income
+I developed a 95% confidence interval for expected income of Millennials with 8 years of education assuming the stronger linear model holds:
 
 ``` r
 new_data <- data.frame(
@@ -307,15 +371,12 @@ conf_int
     ##        fit      lwr     upr
     ## 1 15.48157 14.59104 16.3721
 
-We’ll now apply our new results to the regression analysis we conducted
-in Problem 2. For the questions that follow, you should provide
-numerical answers along with code that generates the requested
-intervals. g. (5 pts) Construct an appropriate 95% interval for the
-difference in incomes between the following two individuals from the
-rural area: one person is a millenial with 8 years of education, and the
-other person is a non-millenial with 7 years of education. You may form
-any required standard errors by replacing σε with ˆσε, and you may base
-your intervals off of a t distribution.
+**Result**: The expected income for Millennials with 8 years of education is $15,482, with a 95% confidence interval of [$14,591, $16,372].
+
+### Comparative Income Analysis
+To understand income differences across groups, I calculated confidence intervals for the difference between:
+- A Millennial with 8 years of education
+- A non-Millennial with 7 years of education
 
 ``` r
 c <- data.frame(Education = 8, Millenial = 'TRUE')
@@ -350,13 +411,11 @@ conf_interval
 ```
 
     ## [1] -9.566549 -7.316420
+    
+**Result**: The expected income difference is -$8,442, with a 95% confidence interval of [-$9,567, -$7,316]. This indicates Millennials with 8 years of education earn significantly less than non-Millennials with 7 years of education.
 
-8.  (4 pts) Construct an appropriate 95% interval for the difference in
-    incomes between two people who share the same values for Millenial
-    and Education. You may form any required standard errors by
-    replacing σε with ˆσε, and you may base your intervals off of a t
-    distribution. If you don’t have enough information to form your
-    interval, explain what additional information you would need.
+### Individual Variation Analysis
+To understand income variation between individuals with identical characteristics:
 
 ``` r
 model_summary <- summary(edu_model)
@@ -372,3 +431,45 @@ conf_interval
 ```
 
     ## [1] -10.17384  10.17384
+
+**Result**: The 95% confidence interval for the difference in income between two individuals with identical education and generational status is [-$10,174, $10,174], reflecting substantial individual variation beyond these measured factors.
+
+## Key Insights and Implications
+
+### 1. Model Validity Considerations
+While the model provides valuable insights, users should be aware of:
+- Heteroscedasticity in residuals
+- Potential non-linearity in subgroups
+- The need for cautious interpretation of standard errors
+
+### 2. Practical Prediction Guidelines
+When using this model for prediction:
+- Confidence intervals are most reliable near the center of the data distribution
+- Predictions for extreme education levels should be treated with caution
+- Consider using robust standard errors for more conservative intervals
+
+### 3. Policy and Planning Implications
+The analysis confirms:
+- Significant generational income gaps persist even after controlling for education
+- Individual variation is substantial, suggesting other unmeasured factors play important roles
+- Educational planning should consider generational context
+
+## Recommendations for Future Analysis
+
+1. **Address Heteroscedasticity**
+   - Implement weighted least squares
+   - Use heteroscedasticity-consistent standard errors
+   - Consider transformation of the dependent variable
+
+2. **Explore Non-Linear Relationships**
+   - Test polynomial terms for education
+   - Consider spline regression for more flexible modeling
+   - Investigate threshold effects
+
+3. **Expand Variable Set**
+   - Include field of study or occupation
+   - Add geographic factors
+   - Consider family background variables
+
+## Conclusion
+This extended analysis confirms the robustness of the generational differences in education-income relationships while identifying important model limitations. The diagnostic assessment reveals heteroscedasticity and potential non-linearity issues that warrant consideration in practical applications. Despite these limitations, the model provides valuable tools for income prediction and policy planning, particularly when used with appropriate caution regarding its assumptions and limitations.
