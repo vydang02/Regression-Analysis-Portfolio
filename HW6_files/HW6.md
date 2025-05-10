@@ -1,30 +1,24 @@
-HW6
-================
 Vy Dang
 2024-12-02
 
-## Problem 1 (through lecture 22 )
+# Wine Auction Price Prediction: Model Selection and Multiple Testing
 
-The dataset wine.csv has 46 observations (rows), each of which
-corresponds to a vintage year of Bordeaux wines auctioned in 2015; and 9
-columns, described in Table 1.
+## Executive Summary
+This comprehensive analysis examines factors affecting Bordeaux wine auction prices, employing advanced statistical techniques to address multicollinearity and model selection challenges. Using data from 46 vintage years of Bordeaux wines, I developed predictive models that account for growing conditions, harvest factors, and market indicators. The study includes a critical examination of multiple testing issues in model selection, providing valuable insights for wine investors, collectors, and auction houses.
 
-We will use this data set to build a predictive model for the
-LogAuctionIndex of a bottle of wine as a function of various predictor
-variables deemed important for the quality and price of wine, such as
-growing conditions, harvest conditions, and proxies for supply and
-demand of wine over time. Before beginning, open the accompanying R
-script and execute the code at the top marked “run before you begin.”
-This will split the data into a training set and a test set based on the
-variable Year. Wines with vintage year 1985 or earlier will be the
-training set, and wines with vintage year from 1986-2000 will form the
-test set. It will then remove Year from the data frames train and test
-due to perfect multicollinearity with Age, and will create vectors and
-matrices y.train, x.train, y.test, x.test which correspond to the
-outcome and covariates in the training and test set respectively.
-Throughout this problem, you may assume the assumptions of the stronger
-linear model hold (there’s no need to create diagnostic plots, despite
-how much fun they are to make).
+## Research Context
+The premium wine market, particularly for Bordeaux vintages, represents a significant investment sector where pricing depends on complex interactions between environmental factors, aging, and market conditions. Understanding these relationships is crucial for accurate valuation and investment decisions. This analysis addresses two key challenges:
+1. Developing robust predictive models for wine prices despite severe multicollinearity
+2. Understanding the statistical implications of model selection procedures
+
+## Part I: Wine Price Prediction Modeling
+
+### Data Description
+The dataset encompasses 46 vintage years of Bordeaux wines auctioned in 2015, with key variables:
+- **LogAuctionIndex**: Natural logarithm of the auction price index (response variable)
+- **Weather Variables**: Winter rain, harvest rain, growing temperature, harvest temperature
+- **Wine Characteristics**: Age (years since vintage)
+- **Market Indicators**: French population, US alcohol consumption
 
 ``` r
 wine <- read.csv("wine.csv")
@@ -35,9 +29,8 @@ train <- subset(wine, Year <= 1985)[,-1]
 test <- subset(wine, Year > 1985)[,-1]
 ```
 
-1.  (2 pts) Using the training set, run a multiple regression with
-    LogAuctionIndex as your response and the other variables as the
-    predictors. Report the in-sample R2 for this model.
+### Initial Model Development
+I began with a comprehensive multiple regression model:
 
 ``` r
 full_model <- lm(LogAuctionIndex ~., data = train)
@@ -75,12 +68,13 @@ summary(full_model)$r.squared
 
     ## [1] 0.7893825
 
-2.  (2 pts) It is commonly believed that the quality (and hence, price)
-    of a Bordeaux wine increases with age. Using the output from your
-    regression in (a), at α = 0.05, is there evidence to suggest that a
-    model including Age provides a substantial improvement in predictive
-    performance over a model that includes all of the candidate
-    predictor variables except Age?
+**Key Results:**
+- In-sample R² = 0.789 (strong explanatory power)
+- Significant predictors: Winter rain, harvest rain, growing temperature
+- Surprisingly, Age shows non-significance (p = 0.641)
+
+### Investigating the Age Paradox
+The conventional wisdom suggests wine quality improves with age, yet our model shows Age as non-significant. This paradox warranted investigation:
 
 ``` r
 reduced_model <- lm(LogAuctionIndex ~ . - Age, data = train)
@@ -100,11 +94,16 @@ anova(reduced_model, full_model)
 P-value is 0.6407 greater than 0.05, we do not have enough evidence to
 conclude that Age improves the model.
 
-3.  (4 pts) The answer to (b) may surprise you given the problem
-    context. To help uncover what has happened, first report the
-    variance inflation factor for the variable Age. Then, calculate the
-    correlation between Age and the other predictor variables. Is Age
-    highly correlated with any of the other predictor variables?
+**Multicollinearity Findings:**
+- Age VIF = 66.94 (extreme multicollinearity)
+- Correlation analysis revealed:
+  - Age vs. FrancePop: r = -0.990
+  - Age vs. USAlcConsump: r = -0.925
+
+These extremely high correlations explain the paradox: as wines age, both French population and US alcohol consumption have changed systematically over time, creating severe multicollinearity.
+
+To help uncover what has happened, I will first report the
+    variance inflation factor for the variable Age:
 
 ``` r
 library(car)
@@ -132,16 +131,15 @@ cor_matrix['Age', ]
     ##             Age       FrancePop    USAlcConsump 
     ##      1.00000000     -0.98999198     -0.92500432
 
+**Key Findings:**
+
 Age highly negatively correlates with FrancePop and USAlcConsump
 predictors. The high correlations between Age and FrancePop suggest that
 as Age increases, both FrancePop and USAlcConsump decrease in a nearly
 linear fashion. The highly negative correlations and high VIF values
 imply multicollinearity is present.
 
-4.  (2 pts) In light of your investigation in (c), explain the source of
-    the counterintuitive finding in (b).
-
-The counterintuitive finding in (b) is primarily due to the severe
+The counterintuitive finding is primarily due to the severe
 multicollinearity between Age and other predictors (FrancePop and
 USAlcConsump). This multicollinearity makes it difficult to determine
 the individual contribution of Age, leading to a non-significant p-value
@@ -157,10 +155,10 @@ each predictor. This makes the coefficient estimates unreliable. The
 inflated standard errors often result in non-significant p-values for
 predictors that are actually important.
 
-5.  (3 pts) Because the number of candidate predictor variables is
-    small, we can actually run best subset selection on this data. Using
-    the training set, use best subset selection based upon AIC to choose
-    a model. Report which covariates were included in the model.
+### Model Selection Approaches
+
+#### 1. Best Subset Selection
+Using information criteria for optimal model selection:
 
 ``` r
 library(leaps)
@@ -204,14 +202,9 @@ best_model_variables
 
     ## [1] "(Intercept)" "WinterRain"  "HarvestRain" "GrowTemp"    "Age"
 
-Best model includes “WinterRain”, “HarvestRain”, “GrowTemp”, “Age”.
+The optimal model includes: Winter rain, Harvest rain, Growing temperature, and Age.
 
-6.  (3 pts) Forward stepwise and backwards elimination are greedy
-    approaches to the best subset selection problem, particularly
-    beneficial when p is large. For the sake of illustration, run
-    forward stepwise on the training set using AIC to choose a model.
-    Does your chosen model match the model you selected in (e)? If not,
-    which variables are different between them?
+#### 2. Forward Stepwise Selection
 
 ``` r
 library(MASS)
@@ -289,14 +282,12 @@ names(coef(stepwise_model))
 All other variables are the same, but model in e has ‘Age’ while here we
 have FrancePop.
 
-7.  (3 pts) Referring to the accompanying R script, run ridge regression
-    with λ chosen through cross-validation by filling in the arguments
-    to the command provided. Be sure to run the command set.seed(321)
-    immediately before performing ridge regression. Count how many
-    covariates have nonzero slope coefficients. Then, report the
-    in-sample R2 for ridge regression, and compare it to that of the
-    model in (a). Explain why the model in (a) has a higher in-sample
-    R2.
+The stepwise model selected: Growing temperature, Harvest rain, France population, and Winter rain.
+
+Notably, stepwise selection chose FrancePop instead of Age, highlighting how correlated predictors can lead to different model selections.
+
+#### 3. Ridge Regression
+To address multicollinearity explicitly:
 
 ``` r
 y.train <- as.vector(train$LogAuctionIndex)
@@ -360,9 +351,12 @@ generalization. This regularization can result in a slightly lower
 in-sample R2, but generally leads to better performance on new unseen
 data by avoiding overfitting.
 
-8.  (3 pts) Using the test set, report the out-of-sample R2 for the
-    models you fit in (a), (e), (f), and (g). Which regression method
-    provided the best out-of-sample fit?
+Ridge regression keeps all predictors but shrinks coefficients, particularly for correlated variables:
+- All coefficients remain non-zero
+- Coefficients for correlated predictors are substantially reduced
+- In-sample R² = 0.782 (slightly lower than OLS)
+
+The out-of-sample R2 for the models:
 
 ``` r
 y_test_pred_a <- predict(full_model, newdata = test)
@@ -408,12 +402,6 @@ R2_test_g
 The best subset selection model (e) provides the highest out-of-sample
 R2 of 0.732.
 
-1.  (2 pts) Ridge regression is a popular method when one wants their
-    prediction equation to depend upon all of the predictor variables,
-    but wants to protect against the impact of multicollinearity on
-    out-of-sample performance. Discuss how your findings in this problem
-    reflect this motivation for using ridge regression.
-
 The initial investigation revealed severe multicollinearity,
 particularly between the variable Age and other predictors such as
 FrancePop and USAlcConsump. The Variance Inflation Factor (VIF) for Age
@@ -427,18 +415,30 @@ that all predictors remain in the model with nonzero coefficients albeit
 shrunk.By applying a penalty to the regression coefficients, ridge
 regression stabilizes their estimates, making the model more robust.
 
-## Problem 2 (through lecture 21)
+### Model Performance Comparison
 
-As we’ve mentioned in class, the act of selecting a model by means of
-comparing in-sample predictive performance corrupts the properties of
-hypothesis tests that R gives you in the training set due to multiple
-testing. The issue is that in building a model, we implicitly conduct
-many different comparisons before reaching the eventual model. This, in
-turn, results in test statistics which follow distributions under the
-null hypothesis which differ from those used by conventional output. We
-will now, in a very simple situation, illustrate the potential issue
-along with a few solutions.
+| Model | In-Sample R² | Out-of-Sample R² |
+|-------|--------------|------------------|
+| Full OLS | 0.789 | 0.511 |
+| Best Subset | 0.786 | 0.732 |
+| Stepwise | 0.783 | 0.704 |
+| Ridge | 0.782 | 0.696 |
 
+The best subset selection model achieved the highest out-of-sample R² (0.732), demonstrating superior predictive performance.
+
+### Key Insights from Wine Price Modeling
+
+1. **Multicollinearity Impact**: The severe correlation between Age and demographic variables obscures Age's true effect
+2. **Weather Dominance**: Growing conditions (temperature and rainfall) are the most reliable predictors
+3. **Model Selection Matters**: Different selection methods yield different models, with best subset selection providing optimal out-of-sample performance
+4. **Ridge Benefits**: While Ridge had slightly lower performance, it provides stability when all predictors must be retained
+
+## Part II: Multiple Testing in Model Selection
+
+### The Multiple Testing Problem
+When selecting the "best" model based on p-values, we implicitly conduct multiple comparisons, inflating the Type I error rate. This simulation study quantifies this inflation and explores corrective measures.
+
+### Simulation Design
 Suppose I have 10 covariates, x1, …, x10, and among these 10 covariates
 I want to find the “best” simple regression based on whichever covariate
 has the smallest p-value in a simple regression. I then decide to report
@@ -449,14 +449,11 @@ for j = 1, …, 10. We will conduct the tests at α = 0.05, and we will
 generate the observations from the model for i = 1, …, 100 : yi = 0 +
 εi, εi iid ∼ N (0, 1)
 
-1.  (3 pts) Before proceeding, suppose instead I had committed myself to
+Before proceeding, suppose instead I had committed myself to
     only reporting the result of the hypothesis test corresponding to
     the slope coefficient in a simple regression of y on x1, rather than
     the result of the “best” hypothesis test. If I conduct my test at α
-    = 0.05, what would my type I error rate be? There’s no need to
-    create a simulation to answer this.
-
-The type I error rate would be alpha=0.05, or 5%. If only testing beta1
+    = 0.05, the type I error rate would be alpha=0.05, or 5%. If only testing beta1
 and assuming all assumptions of the linear regression model are met
 (including normally distributed errors and no relationship between x1
 and y in reality), the test will correctly follow the specified
@@ -466,11 +463,15 @@ because we have a predetermined significance level. By definition, the
 probability of incorrectly rejecting the true null hypothesis (making a
 Type I error) is equal to the significance level alpha.
 
-2.  (4 pts) Now, fill in the blanks in the R code in the accompanying
-    script to mimic the process of first finding the “best” model based
-    on p-values, and then reporting the results of a hypothesis test
-    conducted at α = 0.05. In what proportion of simulations do you
-    incorrectly reject the null hypothesis?
+We will design the simulation as follows:
+
+- 10 independent predictors with no true relationship to the response
+- Sample size: n = 100
+- 10,000 simulation iterations
+- Nominal significance level: α = 0.05
+
+### Method 1: Naive Selection
+Select the predictor with the smallest p-value:
 
 ``` r
 nsim <- 10000
@@ -496,13 +497,10 @@ mean(reject)
 
     ## [1] 0.3987
 
-3.  (3 pts) Modify the simulation in (b) by using the Bonferroni
-    correction to control the familywise error rate at α = 0.05, taking
-    into account the fact that you conducted multiple hypothesis tests
-    in order to arrive at your winning model. Describe the modification
-    that you made. After re-running the simulation with this
-    modification, in what fraction of simulations do you incorrectly
-    reject the null hypothesis?
+**Result**: Type I error rate = 39.9% (vs. nominal 5%)
+
+### Method 2: Bonferroni Correction
+Adjust significance level for multiple testing:
 
 ``` r
 nsim <- 10000
@@ -532,21 +530,15 @@ the adjusted significance level alpha bonferroni - We calculate the
 proportion of times the null hypothesis is incorrectly rejected using
 the adjusted significance level to control the familywise error rate.
 
-In class we mentioned how another way to conduct hypothesis tests after
-model selection is to use the training set/test set idea: build your
+**Result**: Type I error rate = 4.6% (properly controlled)
+
+### Method 3: Train-Test Split
+
+Use training data for selection, test data for inference. I will build my
 model on the training set without worrying about multiple comparisons
 (hence treating the training set as an exploratory data set for
-discovering patterns), but then conduct your hypothesis tests on the
-test set (using it as a confirmatory data set for testing the hypotheses
-you’ve come up with in your exploration). Let’s put that idea into use.
-
-4.  (4 pts) Fill in the blanks in the simulation code for (d) such that
-    you first find the covariate with the smallest simple regression
-    p-value in the training set and record this covariate. After this,
-    run a simple regression using this covariate on the test set.
-    Conduct a hypothesis test for this covariate’s slope coefficient α =
-    0.05 on the test set. Provide your code. In what fraction of
-    simulations do you incorrectly reject the null hypothesis?
+discovering patterns), but then conduct my hypothesis tests on the
+test set (using it as a confirmatory data set for testing the hypotheses). 
 
 ``` r
 library(caTools) # install package if you haven't already
@@ -573,17 +565,47 @@ for(i in 1:nsim)
   }
   
   # use the which.min command to find which p-value was smallest in the TRAINING set. 
-  # This is the covariate we have chosen
+  # This is the covariate I have chosen
   smallest <- which.min(pvals.train)
   
   # run a regression on the TEST set using the chosen covariate
   
   pval.test <- summary(lm(y.test~X.test[, smallest]))$coef[2,4]
-  
-  # did you reject in the above test at alpha=0.05? store in reject.new
   reject.new[i] <- (pval.test <= 0.05)
 }
 mean(reject.new)
 ```
 
     ## [1] 0.0491
+
+**Result**: Type I error rate = 4.9% (properly controlled)
+
+## Business Applications
+
+### For Wine Investors
+- Focus on weather data when evaluating future vintages
+- Consider that apparent age effects may be confounded with market evolution
+- Use best subset models for price predictions
+
+### For Auction Houses
+- Emphasize growing conditions in marketing materials
+- Provide weather context for vintage years
+- Use robust prediction intervals for reserve price setting
+
+### For Wine Collectors
+- Prioritize vintages with optimal growing conditions
+- Understand that age alone doesn't guarantee value appreciation
+- Consider market dynamics when timing sales
+
+## Statistical Best Practices
+
+### Model Selection Guidelines
+1. Always evaluate out-of-sample performance
+2. Consider multicollinearity when interpreting coefficients
+3. Use appropriate corrections for multiple testing
+4. Validate findings on held-out data
+
+### Addressing Multicollinearity
+1. Ridge regression for prediction when all variables needed
+2. Best subset selection for interpretable models
+3. Domain knowledge to choose between correlated predictors
