@@ -445,7 +445,7 @@ has the smallest p-value in a simple regression. I then decide to report
 the result of the hypothesis test for my chosen model. In reality there
 will be no relationship between the response variable and either of the
 predictor variables, such that the null hypothesis that βj = 0 is true
-for j = 1, …, 10. We will conduct the tests at α = 0.05, and we will
+for j = 1, …, 10. I will conduct the tests at α = 0.05, and I will
 generate the observations from the model for i = 1, …, 100 : yi = 0 +
 εi, εi iid ∼ N (0, 1)
 
@@ -463,7 +463,7 @@ because we have a predetermined significance level. By definition, the
 probability of incorrectly rejecting the true null hypothesis (making a
 Type I error) is equal to the significance level alpha.
 
-We will design the simulation as follows:
+I will design the simulation as follows:
 
 - 10 independent predictors with no true relationship to the response
 - Sample size: n = 100
