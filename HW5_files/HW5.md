@@ -1,24 +1,25 @@
-HW5
-================
 Vy Dang
 2024-11-13
 
-## Problem 1 (through lecture 16)
+# Hybrid Vehicle Pricing Analysis: Transformations and Model Selection
 
-The data set hybrid car.csv contains data on 153 models of hybrid cars
-released from 1997 (the year the first Prius was introduced) to 2013.
-The data includes the manufacturer’s suggested retail price (msrp, in
-2013 dollars), the model year of the car, the miles per gallon of the
-car (mpg), and the car’s acceleration rate (in km/hr/sec, accelerate).
-Our objective will try to be to understand the extent to which year,
-mpg, and acceleration can be used to predict the msrp of the car.
+## Executive Summary
+This analysis examines pricing patterns in the hybrid vehicle market from 1997-2013, developing predictive models for vehicle pricing based on key performance characteristics. Through logarithmic transformations and polynomial modeling, I address non-linear relationships and identify optimal model complexity. The findings provide insights valuable for automotive manufacturers, dealerships, and consumers interested in understanding hybrid vehicle valuation.
 
-1.  (2 pts) Run multiple regression with msrp as the response and the
-    other three variables as our predictors. Then, provide a plot with
-    residuals from this regression on the y axis and fitted values on
-    the x axis. Discuss what this plot suggests about whether or not the
-    “linearity” assumption of the stronger linear model appears
-    appropriate.
+## Project Overview
+As the hybrid vehicle market has matured since the introduction of the Toyota Prius in 1997, understanding pricing dynamics has become increasingly important. This analysis explores how vehicle characteristics like fuel efficiency, acceleration, and model year influence manufacturer's suggested retail price (MSRP), with particular focus on handling non-linear relationships and model selection techniques.
+
+## Data Description
+The dataset encompasses 153 hybrid car models released between 1997 and 2013, including:
+- **MSRP**: Manufacturer's suggested retail price (2013 dollars)
+- **Year**: Model year of the vehicle
+- **MPG**: Miles per gallon (fuel efficiency)
+- **Acceleration**: Acceleration rate (km/hr/sec)
+
+## Part I: Model Development and Transformation
+
+### Initial Linear Model Assessment
+I began with a standard multiple regression model to predict MSRP:
 
 ``` r
 library(readr)
@@ -59,6 +60,14 @@ summary(model)
     ## Multiple R-squared:  0.5289, Adjusted R-squared:  0.5194 
     ## F-statistic: 55.76 on 3 and 149 DF,  p-value: < 2.2e-16
 
+**Initial Model Results:**
+- R² = 0.529 (explains 52.9% of price variation)
+- Significant predictors: MPG (negative), Acceleration (positive)
+- Year: Not statistically significant (p = 0.478)
+
+### Diagnostic Analysis
+Residual analysis revealed violations of linear model assumptions:
+
 ``` r
 residuals <- resid(model)
 fitted_values <- fitted(model)
@@ -69,19 +78,16 @@ ggplot(data, aes(x=fitted_values, y=residuals)) +
 ```
 
 ![](unnamed-chunk-1-1.png) 
+
 The plot demonstrates a distinct pattern or curvature within the 20000 to 40000
 range of x value. This implies that the relationship between the
 predictors and the response variable is not entirely linear and a
 nonlinear model might be more appropriate. Transformations of the
 predictors and response variable might be needed to meet the linearity
-assumption.
+assumption. 
 
-2.  (3 pts) Define lmsrp = log(msrp) as the base-e logarithm of the
-    msrp, and similarly define lmpg = log(mpg) as the base-e logarithm
-    of mpg. Run a new regression with lmsrp as the response and year,
-    lmpg, and accelerate as the predictors. Assess whether, after
-    applying these log transformations, the assumptions of the stronger
-    linear model appear reasonable.
+### Logarithmic Transformation Approach
+To address non-linearity, I applied logarithmic transformations to both the response and select predictors:
 
 ``` r
 data$lmsrp <- log(data$msrp)
@@ -111,6 +117,14 @@ summary(log_model)
     ## Multiple R-squared:  0.5454, Adjusted R-squared:  0.5363 
     ## F-statistic: 59.59 on 3 and 149 DF,  p-value: < 2.2e-16
 
+**Transformed Model Results:**
+- Improved R² = 0.545
+- Better residual patterns
+- All predictors now significant
+
+### Model Diagnostic Validation
+Post-transformation diagnostics showed substantial improvements:
+
 ``` r
 log_residuals <- resid(log_model)
 log_fitted_values <- fitted(log_model)
@@ -139,10 +153,10 @@ the straight line with minimal deviation, this suggests that the
 residuals are normally distributed which satisfies the assumption of
 normality of errors.
 
-3.  (2 pts) Based on your regression in (b), provide a prediction
-    equation for the msrp of a car as a function of its model year, the
-    miles per gallon of the car, and the car’s acceleration. Make sure
-    your equation provides predictions for msrp itself, not log(msrp).
+## Practical Applications
+
+### Prediction Equation
+The final prediction equation for MSRP:
 
 ``` r
 beta_0 <- coef(log_model)[1]
@@ -164,10 +178,28 @@ predicted_msrp
     ## (Intercept) 
     ##    24372.51
 
-4.  (4 pts) Use the pairs bootstrap to find a 95% confidence interval
-    for the true slope coefficient on lmpg based upon your regression in
-    (b).
+```
+MSRP = exp(4.183 + 0.003439 × Year - 0.478 × log(MPG) + 0.086 × Acceleration)
+```
 
+This equation enables:
+- Price estimation for new hybrid models
+- Competitive pricing analysis
+- Value assessment for used hybrid vehicles
+
+### Interpretation of Effects
+
+#### Fuel Efficiency Impact
+- 10% increase in MPG → 4.78% decrease in price
+- Counterintuitive but reflects market positioning of economy vs. luxury hybrids
+
+#### Acceleration Premium
+- Two-unit acceleration increase → 18.9% price increase
+- Reflects consumer willingness to pay for performance
+
+### Confidence Intervals Using Bootstrap
+I implemented pairs bootstrap to estimate uncertainty in the MPG coefficient:
+  
 ``` r
 B <- 1000
 boot_coefs <- numeric(B)
@@ -192,15 +224,11 @@ ci_upper
     ##      97.5% 
     ## -0.2974672
 
-In what follows, you can assume that the stronger linear model holds for
-the regression you fit in (b). All subsequent problems should be
-answered based upon the regression you fit in (b).
+**95% CI for log(MPG) coefficient: [-0.703, -0.297]**
 
-5.  (3 pts) For two cars that differ in acceleration by two units but
-    have the same values of mpg and year, can you predict the percentage
-    difference in the msrp values of these cars? If so, provide your
-    prediction. If not, describe what additional information you’d need
-    to form your prediction.
+This wide interval suggests considerable uncertainty in the MPG-price relationship.
+
+### Example Prediction
 
 ``` r
 percentage_difference <- (exp(2 * beta_3) - 1) * 100
@@ -214,11 +242,7 @@ The msrp of a car is predicted to be approximately 18.87% higher for a
 car with an acceleration that is 2 units greater, holding mpg and year
 constant.
 
-6.  (3 pts) For two cars that differ in in acceleration by two units but
-    have the same values of mpg and year, can you predict the actual
-    difference (in dollars) between the msrp values of these cars? If
-    so, provide your prediction. If not, describe what additional
-    information you’d need to form your prediction.
+For two cars that differ in in acceleration by two units but have the same values of mpg and year, the actual difference (in dollars) between the msrp values of these cars.
 
 ``` r
 k <- exp(2 * beta_3)
@@ -230,10 +254,7 @@ delta_msrp
     ## accelerate 
     ##   5663.981
 
-7.  (5 pts) Provide a 90% prediction interval for the msrp of a car with
-    a model year of 2009, an acceleration of 10 km/hr/sec, and a miles
-    per gallon value of 40. Be sure your prediction interval provides a
-    range of predicted values for msrp, not log(msrp).
+For a 2009 hybrid with 40 MPG and 10 km/hr/sec acceleration:
 
 ``` r
 new_data <- data.frame(year= 2009, lmpg = log(40), accelerate = 10)
@@ -261,12 +282,16 @@ msrp_pred_upr
 
     ## [1] 46331.16
 
-## Problem 2 (through lecture 17)
+**Result:**
+- Predicted MSRP: $26,745
+- 90% Prediction Interval: [$15,438, $46,331]
 
-In this problem we’ll again use the hybrid car.csv data set. We will
-compare the out of sample prediction error for competing models
-predicting lmsrp = log(msrp) solely as a function of mpg. Before
-beginning, you run the following code.
+The wide prediction interval reflects substantial individual vehicle variation beyond measured characteristics.
+
+## Part II: Model Selection and Complexity
+
+### Training/Test Split Methodology
+To evaluate model performance objectively, I split the data into training and test sets:
 
 ``` r
 hybrid <- read.csv("hybrid_car.csv")
@@ -274,42 +299,15 @@ dat <- data.frame(lmsrp = log(hybrid$msrp), lmpg = log(hybrid$mpg), mpg = hybrid
 trainind <- read.csv("train_hybrid_car.csv")$train
 ```
 
-It starts by reloading the hybrid dataset in case you did anything funny
-in Problem 1. It then defines a new data frame dat that will be useful
-moving forward (especially if you’d like to base your code off of what
-we did in Lecture 17, which we’d recommend). It also reads in an
-additional dataset, train hybrid car.csv, which contains indicators of
-whether or not a given observation in the original data set has been
-assigned to the training set or the test set (TRUE if training set,
-FALSE if test set). While you would normally randomly split the training
-and test sets on your own, we have done it ahead of time to ensure that
-everyone’s answers align.
-
-1.  (2 pts) Using the logicals contained in train hybrid car.csv, show
-    code that defines the training data set as the subset of the
-    original hybrid cars data set for which the logical is TRUE, and the
-    test set as the subset of observations for which the logical is
-    FALSE.
-
 ``` r
 train_set <- dat[trainind == TRUE, ]
 test_set <- dat[trainind == FALSE, ]
 ```
 
-2.  (8 pts) Use the training set to create 11 prediction functions based
-    upon the following 11 regression models: • A linear regression of
-    lmsrp on lmpg • Polynomial regressions of degree 1,2,…,10 with lmsrp
-    as the response and the varying powers of mpg itself (not lmpg) as
-    the predictor variables.
-
-Then, use the test set to calculate the out-of-sample R2 for each of
-these eleven competing models. Do so using lmsrp as the response
-variable (that is, there’s no need to convert your predictions to
-predictions of msrp itself before calculating the out-of-sample R2). In
-addition to showing code that performs the above task, report the values
-for the out of sample R2 for each of your 11 models. In light of this,
-which model is estimated to have the smallest expected prediction error
-for future observations?
+### Polynomial Model Comparison
+I evaluated 11 models of increasing complexity:
+1. Linear regression of log(MSRP) on log(MPG)
+2. Polynomial regressions (degrees 1-10) of log(MSRP) on MPG
 
 ``` r
 library(dplyr)
@@ -393,5 +391,54 @@ sorted
     ## 10         Linear (lmpg) 0.3658679
     ## 11  Polynomial (degree1) 0.3212001
 
-Polynomial degree 7 has the highest out-of-sample R^2 so this model has
-the smallest expected prediction error for future observations.
+Polynomial degree 7 has the highest out-of-sample R^2 so this model has the smallest expected prediction error for future observations.
+
+### Model Performance Results
+
+| Model | Out-of-Sample R² |
+|-------|------------------|
+| 7th Degree Polynomial | 0.547 |
+| 6th Degree Polynomial | 0.528 |
+| 8th Degree Polynomial | 0.500 |
+| 10th Degree Polynomial | 0.463 |
+| 5th Degree Polynomial | 0.454 |
+| Linear (log-log) | 0.366 |
+
+### Optimal Model Selection
+The 7th-degree polynomial achieved the highest out-of-sample R², suggesting:
+- Non-linear relationships are important
+- Moderate complexity captures key patterns
+- Higher-degree models show diminishing returns and possible overfitting
+
+## Business Implications
+
+### For Automotive Manufacturers
+- Performance characteristics (acceleration) command significant price premiums
+- Fuel efficiency relationship is complex and may reflect market segmentation
+- Model year has minimal direct impact on pricing once other factors are considered
+
+### For Dealerships
+- Use the model for competitive pricing analysis
+- Understand which features drive value in the hybrid market
+- Better position inventory based on performance characteristics
+
+### For Consumers
+- Quantify the trade-off between fuel efficiency and price
+- Understand the premium for performance features
+- Make informed decisions about hybrid vehicle purchases
+
+## Technical Considerations
+
+### Model Limitations
+1. **Temporal Constraints**: Model trained on 1997-2013 data may not reflect current market dynamics
+2. **Feature Set**: Limited to three predictors; brand, features, and technology level not included
+3. **Market Evolution**: Hybrid technology and consumer preferences have evolved significantly
+
+### Recommendations for Future Analysis
+1. Include additional features (brand, trim level, battery capacity)
+2. Consider time-varying coefficients to capture market evolution
+3. Explore machine learning approaches for comparison
+4. Update with more recent market data
+
+## Conclusion
+This analysis demonstrates the importance of proper transformation and model selection in automotive pricing analysis. The logarithmic transformation successfully addressed non-linearity in the data, while polynomial modeling revealed the optimal balance between model complexity and predictive performance. The findings provide a robust framework for understanding hybrid vehicle pricing dynamics and can inform strategic decisions across the automotive value chain.
