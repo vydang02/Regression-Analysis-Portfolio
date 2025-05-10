@@ -1,35 +1,38 @@
 Vy Dang
 2024-09-30
 
-## Problem 1 (through Lecture 9)
+# Ames Housing Market Analysis: Predicting Home Values Through Property Characteristics
 
-In this problem, we consider the Ames, Iowa Housing Prices dataset,
-which describes sales of 2,838 properties in the town of Ames, Iowa from
-2006 to 20101. You will work with the dataset provided in the
-AmesSales.csv file. This file has been pre-processed to simplify the
-analysis. We started with a partially processed set available on Github2
-and selected a few of the most relevant variables to include in our
-analysis. The file contains 12 variables, described below. The first
-variable is the property’s sale price—which we aim to predict. The other
-variables describe the property details in quantitative terms (square
-footage, number of rooms, date of construction). There is one
-categorical variable, BldgType, which describes different types of homes
-(e.g. townhouse, duplex, etc.). • SalePrice - the property’s sale price
-(dollars) • TotalRooms: Total number of rooms • Bedrooms: \# bedrooms •
-FullBath: Full bathrooms • HalfBath: Half baths • LivArea: Ground living
-area (sq. feet) • Fireplaces: Number of fireplaces • GarageArea: Size of
-garage (sq. feet) • PoolArea: Size of pool (sq. feet) • YearBuilt:
-Original construction date • YearSold: Year Sold • BldgType: Type of
-dwelling Run the following commands to read in the data and make sure
-SalePrice is encoded as a numeric variable and not a factor variable.
+## Executive Summary
+This analysis examines factors driving home prices in Ames, Iowa using multiple regression techniques. By analyzing 2,838 property sales from 2006-2010, I developed predictive models that identify key value drivers and their interactions. The findings demonstrate how living area impacts property value differently across building types, providing insights valuable for real estate professionals, buyers, and sellers.
+
+## Project Overview
+The Ames housing market presents an excellent case study for understanding property valuation dynamics. This analysis explores how various property characteristics contribute to sale prices, with particular focus on how the relationship between living area and price varies by building type.
+
+## Data Description
+The dataset encompasses 2,838 property sales in Ames, Iowa from 2006-2010, with 12 key variables:
+
+- **SalePrice**: The property's sale price (target variable)
+- **TotalRooms**: Total number of rooms
+- **Bedrooms**: Number of bedrooms
+- **FullBath**: Number of full bathrooms
+- **HalfBath**: Number of half bathrooms
+- **LivArea**: Ground living area (square feet)
+- **Fireplaces**: Number of fireplaces
+- **GarageArea**: Size of garage (square feet)
+- **PoolArea**: Size of pool (square feet)
+- **YearBuilt**: Original construction date
+- **YearSold**: Year of sale
+- **BldgType**: Type of dwelling (categorical)
+
 
 ``` r
 ames = read.csv ("AmesSales.csv")
 ames$SalePrice = as.numeric(ames$SalePrice)
 ```
 
-1.  (2 pts) Use the hist() function on SalePrice to view the
-    distribution of the dependent variable. Describe its shape.
+## Exploratory Analysis
+Initial visualization reveals the distribution of sale prices in the market:
 
 ``` r
 hist(ames$SalePrice, 
