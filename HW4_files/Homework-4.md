@@ -1,28 +1,25 @@
 Vy Dang
 2024-10-28
 
+# Regression Diagnostics and Robust Inference: A Simulation Study
+
+## Executive Summary
+This analysis investigates the robustness of regression inference methods when key model assumptions are violated. Through comprehensive diagnostic testing and Monte Carlo simulation, I examine how violations of normality and homoscedasticity affect the reliability of standard errors, confidence intervals, and statistical inference. The findings provide practical guidance for choosing appropriate estimation methods in real-world applications where model assumptions may not hold perfectly.
+
+## Research Context
+Ordinary Least Squares (OLS) regression relies on several key assumptions for valid statistical inference. In practice, these assumptions are often violated to varying degrees. Understanding how these violations impact our conclusions is crucial for applied data analysis. This study systematically explores two common violations:
+
+1. Non-normality of error terms
+2. Heteroscedasticity (non-constant variance)
+
+## Part I: Empirical Diagnostic Analysis
+
+### Initial Model Assessment
+I began by analyzing an empirical dataset to assess the validity of standard regression assumptions:
+
 ``` r
 xy <- read.csv("xy.csv")
 ```
-
-## Problem 1 (through lecture 13)
-
-The first part of our course focused, in part, on the theoretical
-underpinnings of the standard errors and p-values reported by R after
-conducting ordinary least squares regression. Through this exercise,
-we’ll assess the impact of various violations of these assumptions on
-confidence intervals. For ease of visualization we’ll focus on simple
-regression, but the insights developed here extend without issue to
-multiple regression. The data file xy.csv contains 100 values for a
-predictor variable in the column x, which we will use as the fixed
-values of the predictor variable in our forthcoming illustration. Store
-the values in this data set as a variable called x. It also contains
-responses in the column y, which you should store as a variable called
-y.
-
-1.  (2 pt) Run a regression of y on x, and show the appropriate
-    diagnostic checks for linearity, homoskedasticity, and normality. Do
-    these checks raise cause for concern? Explain.
 
 ``` r
 model <- lm(y ~ x, data = xy)
@@ -47,6 +44,10 @@ summary(model)
     ## Residual standard error: 1.821 on 98 degrees of freedom
     ## Multiple R-squared:  0.3703, Adjusted R-squared:  0.3638 
     ## F-statistic: 57.62 on 1 and 98 DF,  p-value: 1.875e-11
+    
+The model achieved significant results (p < 0.001) with an R² of 0.37, suggesting moderate explanatory power. However, comprehensive diagnostic testing revealed several concerns.
+
+### Diagnostic Assessment
 
 ``` r
 plot(model)
@@ -54,16 +55,18 @@ plot(model)
 
 ![](unnamed-chunk-2-1.png)![](unnamed-chunk-2-2.png)![](unnamed-chunk-2-3.png)![](unnamed-chunk-2-4.png)
 
-- Linearity: The residuals vs. fitted plot shows the values spread wider
+#### Key Findings:
+
+- **Linearity:** The residuals vs. fitted plot shows the values spread wider
   on the 2 sides than in the middle, and more condensed in the middle.
   Linearity might not hold.
 
-- Homoscedasticity: Similar to the residuals vs fitted plot, the
+- **Homoscedasticity:** Similar to the residuals vs fitted plot, the
   Scale-Location plot shows a pattern across fitted values. The values
   spread wider on the 2 sides than in the middle, and more condensed in
   the middle. Homoscedasticity might not hold.
 
-- Normality: The Normal Q-Q plot points don’t lie on a straight line
+- **Normality:** The Normal Q-Q plot points don’t lie on a straight line
   since there are deviating points at the end on the line, indicating
   residuals might not normally distributed. Normality might not hold.
 
@@ -71,10 +74,8 @@ plot(model)
   checks. This necessitate further model refinement or alternate
   approaches like transformations or robust regression methods.
 
-2.  (2 pts) Report an 80% confidence interval for the slope on x using
-    the default standard error reported by R along with quantiles from
-    the t distribution. Based on your diagnostic checks, are you worried
-    about the coverage of this interval? Explain.
+### Confidence Interval Comparison
+Given the diagnostic concerns, I compared standard and robust confidence intervals:
 
 ``` r
 coef_summary <- summary(model)$coefficients
@@ -98,13 +99,16 @@ ci_upper
 
     ## [1] 5.810897
 
-Since there were significant based on the previous diagnostic plots, the
-interval calculated might not have adequate coverage.
+**Results:**
+- Standard CI: [4.12, 5.81]
+- Robust CI: [3.97, 5.96]
 
-3.  (2 pts) Report an 80% confidence interval for the slope on x using a
-    heteroskedasticity-consistent standard error along with quantiles
-    from the t distribution. Based on your diagnostic checks, are you
-    worried about the coverage of this interval? Explain.
+Since there were significant based on the previous diagnostic plots, the interval calculated might not have adequate coverage. The robust confidence interval is wider, reflecting greater uncertainty when accounting for heteroscedasticity. This suggests the standard interval may be overly optimistic. 
+
+## Part II: Simulation Study - Non-Normal Errors
+
+### Methodology
+To systematically investigate the impact of non-normality, I conducted a Monte Carlo simulation with 10,000 replications:
 
 ``` r
 library(sandwich)
